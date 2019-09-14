@@ -1,7 +1,8 @@
 import React from 'react';
 import { List, ListItem, Card, Typography, colors } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-
+import { PostCard } from './PostCard';
+import { PostDetailsCard } from './PostDetailsCard';
 
 const users = {
   1: {
@@ -245,15 +246,12 @@ const posts = [
 ];
 
 const useStyles = makeStyles({
-  root: {
-    width: '35em',
-  }
 });
 
-export function PostList(){
+export function PostList(p: {className?: string}){
   const classes = useStyles()
   return (
-    <List className={classes.root}>
+    <List className={p.className}>
       <ListItem button>        
         <PostCard post={posts[0]}/>
       </ListItem>
@@ -263,94 +261,6 @@ export function PostList(){
       <ListItem button>        
         <PostCard post={posts[2]}/>
       </ListItem>
-    </List>
-  )
-}
-
-const usePostCardStyles = makeStyles({
-  root: {
-    padding: '0.5em',
-  },
-  title: {
-    fontSize: '1.15em',
-  },
-  username: {
-    fontSize: '0.8em',
-    paddingLeft: '0.2em',
-  },
-})
-
-function PostCard(p: {post: any}){
-  const classes = usePostCardStyles()
-  return (
-    <Card className={classes.root}>
-      <Typography className={classes.title}>{p.post.title}</Typography>
-      <Typography className={classes.username}>{p.post.user.name}</Typography>
-    </Card>
-  )
-}
-
-const usePostDetailsCardStyles = makeStyles({
-  root: {
-    padding: '0.5em',
-  },
-  title: {
-    fontSize: '1.3em',
-    paddingLeft: '0.1em',
-  },
-  username: {
-    fontSize: '0.8em',
-    paddingLeft: '0.4em',
-  },
-  body: {
-    marginTop: '0.5em',
-  },
-  commentList: {
-    width: '85%',
-    marginLeft: 'auto',
-    fontSize: '0.92em',
-  },
-})
-
-function PostDetailsCard(p: {post: any, raised: boolean}){
-  const classes = usePostDetailsCardStyles()
-  return (
-    <Card raised={p.raised} className={classes.root}>
-      <Typography className={classes.title}>{p.post.title}</Typography>
-      <Typography className={classes.username}>{p.post.user.name}</Typography>
-      <Typography className={classes.body}>{p.post.body}</Typography>
-      <PostCommentList className={classes.commentList} comments={p.post.comments} />
-    </Card>
-  )
-}
-
-const usePostCommentListStyles = makeStyles({
-  listItem: {
-    backgroundColor: colors.grey[100],
-    margin: '1em 0',
-    padding: '0.5em',
-    borderRadius: '1em',
-  },
-  username: {
-    fontSize: '1em',
-  },
-  body: {
-    fontSize: '1em',
-  },
-})
-
-function PostCommentList(p: {className?: string, comments: any[]}){
-  const classes = usePostCommentListStyles()
-  return (
-    <List disablePadding className={p.className}>
-      {p.comments.map(c => (
-        <ListItem disableGutters className={classes.listItem}>
-          <Typography className={classes.body}>
-            <Typography className={classes.username}>{c.user.name}</Typography>
-            {c.body}
-          </Typography>
-        </ListItem>
-      ))}
     </List>
   )
 }
