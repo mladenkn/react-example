@@ -15,12 +15,17 @@ const usePostCardStyles = makeStyles({
   },
 })
 
-export function PostCard(p: {post: any}){
+export interface Post {
+  title: string
+  username: string
+}
+
+export function PostCard(p: {post: Post}){
   const classes = usePostCardStyles()
   return (
     <Card className={classes.root}>
       <Typography className={classes.title}>{p.post.title}</Typography>
-      <Typography className={classes.username}>{p.post.user.name}</Typography>
+      <Typography className={classes.username}>{p.post.username}</Typography>
     </Card>
   )
 }

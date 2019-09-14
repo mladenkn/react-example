@@ -24,12 +24,24 @@ const usePostDetailsCardStyles = makeStyles({
   },
 })
 
-export function PostDetailsCard(p: {post: any, raised: boolean}){
+export interface Comment {
+  username: string
+  body: string
+}
+
+export interface Post {
+  title: string
+  username: string
+  body: string
+  comments: Comment[]
+}
+
+export function PostDetailsCard(p: {post: Post, raised: boolean}){
   const classes = usePostDetailsCardStyles()
   return (
     <Card raised={p.raised} className={classes.root}>
       <Typography className={classes.title}>{p.post.title}</Typography>
-      <Typography className={classes.username}>{p.post.user.name}</Typography>
+      <Typography className={classes.username}>{p.post.username}</Typography>
       <Typography className={classes.body}>{p.post.body}</Typography>
       <PostCommentList className={classes.commentList} comments={p.post.comments} />
     </Card>
@@ -51,14 +63,14 @@ const usePostCommentListStyles = makeStyles({
   },
 })
 
-function PostCommentList(p: {className?: string, comments: any[]}){
+function PostCommentList(p: {className?: string, comments: Comment[]}){
   const classes = usePostCommentListStyles()
   return (
     <List disablePadding className={p.className}>
       {p.comments.map(c => (
         <ListItem disableGutters className={classes.listItem}>
           <Typography className={classes.body}>
-            <Typography className={classes.username}>{c.user.name}</Typography>
+            <Typography className={classes.username}>{c.username}</Typography>
             {c.body}
           </Typography>
         </ListItem>

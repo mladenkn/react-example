@@ -1,5 +1,5 @@
-import React from 'react';
-import { List, ListItem, Card, Typography, colors } from '@material-ui/core';
+import React, { useState } from 'react';
+import { List, ListItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { PostCard } from './PostCard';
 import { PostDetailsCard } from './PostDetailsCard';
@@ -79,7 +79,7 @@ const users = {
 const posts = [
   {
     "userId": 1,
-    "user": users[1],
+    "username": users[1].name,
     "id": 1,
     "title": "sunt aut facere repellat provident",
     "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto",
@@ -90,7 +90,7 @@ const posts = [
         "name": "id labore ex et quam laborum",
         "email": "Eliseo@gardner.biz",
         "body": "laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium",
-        "user": users[1],
+        "username": users[1].name,
       },
       {
         "postId": 1,
@@ -98,7 +98,7 @@ const posts = [
         "name": "quo vero reiciendis velit similique earum",
         "email": "Jayne_Kuhic@sydney.com",
         "body": "est natus enim nihil est dolore omnis voluptatem numquam\net omnis occaecati quod ullam at\nvoluptatem error expedita pariatur\nnihil sint nostrum voluptatem reiciendis et",
-        "user": users[2],
+        "username": users[2].name,
       },
       {
         "postId": 1,
@@ -106,7 +106,7 @@ const posts = [
         "name": "odio adipisci rerum aut animi",
         "email": "Nikita@garfield.biz",
         "body": "quia molestiae reprehenderit quasi aspernatur\naut expedita occaecati aliquam eveniet laudantium\nomnis quibusdam delectus saepe quia accusamus maiores nam est\ncum et ducimus et vero voluptates excepturi deleniti ratione",
-        "user": users[1],
+        "username": users[1].name,
       },
       {
         "postId": 1,
@@ -114,13 +114,13 @@ const posts = [
         "name": "alias odio sit",
         "email": "Lew@alysha.tv",
         "body": "non et atque\noccaecati deserunt quas accusantium unde odit nobis qui voluptatem\nquia voluptas consequuntur itaque dolor\net qui rerum deleniti ut occaecati",
-        "user": users[3],
+        "username": users[3].name,
       },
     ]
   },
   {
     "userId": 2,
-    "user": users[2],
+    "username": users[2].name,
     "id": 2,
     "title": "qui est esse",
     "body": "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla",
@@ -129,7 +129,7 @@ const posts = [
   },
   {
     "userId": 1,
-    "user": users[1],
+    "username": users[1].name,
     "id": 3,
     "title": "ea molestias quasi exercitationem",
     "body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut",
@@ -138,7 +138,7 @@ const posts = [
   },
   {
     "userId": 3,
-    "user": users[3],
+    "username": users[3].name,
     "id": 4,
     "title": "eum et est occaecati",
     "body": "ullam et saepe reiciendis voluptatem adipisci\nsit amet autem assumenda provident rerum culpa\nquis hic commodi nesciunt rem tenetur doloremque ipsam iure\nquis sunt voluptatem rerum illo velit",
@@ -149,7 +149,7 @@ const posts = [
         "name": "et fugit eligendi deleniti quidem qui sint nihil autem",
         "email": "Presley.Mueller@myrl.com",
         "body": "doloribus at sed quis culpa deserunt consectetur qui praesentium\naccusamus fugiat dicta\nvoluptatem rerum ut voluptate autem\nvoluptatem repellendus aspernatur dolorem in",
-        "user": users[2],
+        "username": users[2].name,
       },
       {
         "postId": 4,
@@ -157,7 +157,7 @@ const posts = [
         "name": "repellat consequatur praesentium vel minus molestias voluptatum",
         "email": "Dallas@ole.me",
         "body": "maiores sed dolores similique labore et inventore et\nquasi temporibus esse sunt id et\neos voluptatem aliquam\naliquid ratione corporis molestiae mollitia quia et magnam dolor",
-        "user": users[1],
+        "username": users[1].name,
       },
       {
         "postId": 4,
@@ -165,7 +165,7 @@ const posts = [
         "name": "et omnis dolorem",
         "email": "Mallory_Kunze@marie.org",
         "body": "ut voluptatem corrupti velit\nad voluptatem maiores\net nisi velit vero accusamus maiores\nvoluptates quia aliquid ullam eaque",
-        "user": users[1],
+        "username": users[1].name,
       },
       {
         "postId": 4,
@@ -173,13 +173,13 @@ const posts = [
         "name": "provident id voluptas",
         "email": "Meghan_Littel@rene.us",
         "body": "sapiente assumenda molestiae atque\nadipisci laborum distinctio aperiam et ab ut omnis\net occaecati aspernatur odit sit rem expedita\nquas enim ipsam minus",
-        "user": users[2],
+        "username": users[2].name,
       }
     ],
   },
   {
     "userId": 1,
-    "user": users[1],
+    "username": users[1].name,
     "id": 5,
     "title": "nesciunt quas odio",
     "body": "repudiandae veniam quaerat sunt sed\nalias aut fugiat sit autem sed est\nvoluptatem omnis possimus esse voluptatibus quis\nest aut tenetur dolor neque",
@@ -190,7 +190,7 @@ const posts = [
         "name": "modi ut eos dolores illum nam dolor",
         "email": "Oswald.Vandervort@leanne.org",
         "body": "expedita maiores dignissimos facilis\nipsum est rem est fugit velit sequi\neum odio dolores dolor totam\noccaecati ratione eius rem velit",
-        "user": users[2],
+        "username": users[2].name,
       },
       {
         "postId": 5,
@@ -198,7 +198,7 @@ const posts = [
         "name": "aut inventore non pariatur sit vitae voluptatem sapiente",
         "email": "Kariane@jadyn.tv",
         "body": "fuga eos qui dolor rerum\ninventore corporis exercitationem\ncorporis cupiditate et deserunt recusandae est sed quis culpa\neum maiores corporis et",
-        "user": users[1],
+        "username": users[1].name,
       },
       {
         "postId": 5,
@@ -206,13 +206,13 @@ const posts = [
         "name": "et officiis id praesentium hic aut ipsa dolorem repudiandae",
         "email": "Nathan@solon.io",
         "body": "vel quae voluptas qui exercitationem\nvoluptatibus unde sed\nminima et qui ipsam aspernatur\nexpedita magnam laudantium et et quaerat ut qui dolorum",
-        "user": users[3],
+        "username": users[3].name,
       }
     ],
   },
   {
     "userId": 2,
-    "user": users[2],
+    "username": users[2].name,
     "id": 7,
     "title": "magnam facilis autem",
     "body": "dolore placeat quibusdam ea quo vitae\nmagni quis enim qui quis quo nemo aut saepe\nquidem repellat excepturi ut quia\nsunt ut sequi eos ea sed quas",
@@ -223,7 +223,7 @@ const posts = [
         "name": "et officiis id praesentium hic aut ipsa dolorem repudiandae",
         "email": "Nathan@solon.io",
         "body": "vel quae voluptas qui exercitationem\nvoluptatibus unde sed\nminima et qui ipsam aspernatur\nexpedita magnam laudantium et et quaerat ut qui dolorum",
-        "user": users[2],
+        "username": users[2].name,
       },
       {
         "postId": 7,
@@ -231,7 +231,7 @@ const posts = [
         "name": "debitis magnam hic odit aut ullam nostrum tenetur",
         "email": "Maynard.Hodkiewicz@roberta.com",
         "body": "nihil ut voluptates blanditiis autem odio dicta rerum\nquisquam saepe et est\nsunt quasi nemo laudantium deserunt\nmolestias tempora quo quia",
-        "user": users[1],
+        "username": users[1].name,
       },
       {
         "postId": 7,
@@ -239,7 +239,7 @@ const posts = [
         "name": "perferendis temporibus delectus optio ea eum ratione dolorum",
         "email": "Christine@ayana.info",
         "body": "iste ut laborum aliquid velit facere itaque\nquo ut soluta dicta voluptate\nerror tempore aut et\nsequi reiciendis dignissimos expedita consequuntur libero sed fugiat facilis",
-        "user": users[2],
+        "username": users[2].name,
       }
     ],
   },
@@ -248,19 +248,24 @@ const posts = [
 const useStyles = makeStyles({
 });
 
+const useLogic = () => {
+  const [activeItemId, setActiveItemId] = useState<number | undefined>(undefined);
+  return { activeItemId, setActiveItemId }
+}
+
 export function PostList(p: {className?: string}){
   const classes = useStyles()
+  const { activeItemId, setActiveItemId } = useLogic()
   return (
     <List className={p.className}>
-      <ListItem button>        
-        <PostCard post={posts[0]}/>
-      </ListItem>
-      <ListItem>        
-        <PostDetailsCard post={posts[3]} raised/>
-      </ListItem>
-      <ListItem button>        
-        <PostCard post={posts[2]}/>
-      </ListItem>
+      {posts.map(p => (
+        <ListItem onClick={() => setActiveItemId(p.id)}>
+          {p.id === activeItemId ?
+            <PostDetailsCard post={p} raised /> :
+            <PostCard post={p} />
+          }
+        </ListItem>
+      ))}
     </List>
   )
 }
