@@ -1,10 +1,11 @@
 import { makeStyles } from "@material-ui/styles"
-import { Card, Typography } from "@material-ui/core"
+import { Card, Typography, CardActionArea } from "@material-ui/core"
 import React from "react"
 
 const usePostCardStyles = makeStyles({
   root: {
     padding: '0.5em',
+    fontSize: '1em',
   },
   title: {
     fontSize: '1.15em',
@@ -20,12 +21,14 @@ export interface Post {
   username: string
 }
 
-export function PostCard(p: {post: Post}){
+export function PostCard(p: {post: Post, onClick: () => void}){
   const classes = usePostCardStyles()
   return (
-    <Card className={classes.root}>
-      <Typography className={classes.title}>{p.post.title}</Typography>
-      <Typography className={classes.username}>{p.post.username}</Typography>
+    <Card>
+      <CardActionArea disableRipple onClick={p.onClick} className={classes.root}>
+        <Typography className={classes.title}>{p.post.title}</Typography>
+        <Typography className={classes.username}>{p.post.username}</Typography>
+      </CardActionArea>
     </Card>
   )
 }

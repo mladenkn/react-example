@@ -259,10 +259,10 @@ export function PostList(p: {className?: string}){
   return (
     <List className={p.className}>
       {posts.map(p => (
-        <ListItem onClick={() => setActiveItemId(p.id)}>
+        <ListItem>
           {p.id === activeItemId ?
             <PostDetailsCard post={p} raised /> :
-            <PostCard post={p} />
+            <PostCard onClick={() => setActiveItemId(p.id)} post={p} />
           }
         </ListItem>
       ))}
