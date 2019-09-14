@@ -1,9 +1,10 @@
 import React from 'react';
+import { PostList } from './PostList';
 
-export const AppRoot = () => {
+export function AppRoot(){
   return (
     <div>
-      AppRoot
+      <PostList />
     </div>
   )
 }
