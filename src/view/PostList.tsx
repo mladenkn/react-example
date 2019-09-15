@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { List, ListItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { PostCard } from './PostCard';
-import { PostDetailsCard, Post as PostDetailsCardPost } from './PostDetailsCard';
+import { PostDetailsCard } from './PostDetailsCard';
+import { PostBasic, PostDetails, getPostDetails } from '../data';
 
 const useStyles = makeStyles({
 });
@@ -12,9 +13,7 @@ const useLogic = () => {
   return { activeItemId, setActiveItemId }
 }
 
-type Post = PostDetailsCardPost & {id: number}
-
-export function PostList(p: {className?: string, posts: Post[]}){
+export function PostList(p: {className?: string, posts: (PostBasic | PostDetails)[]}){
   const classes = useStyles()
   const { activeItemId, setActiveItemId } = useLogic()
   return (
@@ -22,8 +21,8 @@ export function PostList(p: {className?: string, posts: Post[]}){
       {p.posts.map(p => (
         <ListItem>
           {p.id === activeItemId ?
-            <PostDetailsCard post={p} raised /> :
-            <PostCard onClick={() => setActiveItemId(p.id)} post={p} />
+            <PostDetailsCard post={getPostDetails(p.id)!} raised /> :
+            <PostCard onClick={() => setActiveItemId(p.id)} post={p as PostBasic} />
           }
         </ListItem>
       ))}

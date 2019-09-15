@@ -1,6 +1,7 @@
 import React from 'react'
 import { makeStyles } from "@material-ui/styles"
 import { Card, List, ListItem, Typography, colors } from "@material-ui/core"
+import { PostDetails, PostDetailsComment } from '../data'
 
 const usePostDetailsCardStyles = makeStyles({
   root: {
@@ -24,24 +25,12 @@ const usePostDetailsCardStyles = makeStyles({
   },
 })
 
-export interface Comment {
-  username: string
-  body: string
-}
-
-export interface Post {
-  title: string
-  username: string
-  body: string
-  comments: Comment[]
-}
-
-export function PostDetailsCard(p: {post: Post, raised: boolean}){
+export function PostDetailsCard(p: {post: PostDetails, raised: boolean}){
   const classes = usePostDetailsCardStyles()
   return (
     <Card raised={p.raised} className={classes.root}>
       <Typography className={classes.title}>{p.post.title}</Typography>
-      <Typography className={classes.username}>{p.post.username}</Typography>
+      <Typography className={classes.username}>{p.post.user.name}</Typography>
       <Typography className={classes.body}>{p.post.body}</Typography>
       <PostCommentList className={classes.commentList} comments={p.post.comments} />
     </Card>
@@ -63,14 +52,14 @@ const usePostCommentListStyles = makeStyles({
   },
 })
 
-function PostCommentList(p: {className?: string, comments: Comment[]}){
+function PostCommentList(p: {className?: string, comments: PostDetailsComment[]}){
   const classes = usePostCommentListStyles()
   return (
     <List disablePadding className={p.className}>
       {p.comments.map(c => (
         <ListItem disableGutters className={classes.listItem}>
           <Typography className={classes.body}>
-            <Typography className={classes.username}>{c.username}</Typography>
+            <Typography className={classes.username}>{c.user.name}</Typography>
             {c.body}
           </Typography>
         </ListItem>
