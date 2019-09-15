@@ -1,4 +1,5 @@
 import { PostDetails, PostBasic, postBasicList, getPostDetails, getPostBasic } from "../data";
+import { createSlice, PayloadAction } from "redux-starter-kit";
 
 // type FetchablePostDetails = {
 //     data: PostDetails | undefined
@@ -18,10 +19,10 @@ const initialState: PostListState = {
     data: postBasicList
 }
 
-export function postListReducer(state = initialState, action: any){
-    switch(action.type){
-
-        case 'ON_POST_BASIC_CLICK': 
+export const { reducer: postListReducer, actions: postListActions } = createSlice({
+    initialState,
+    reducers: {
+        onPostBasicClick(state, action: PayloadAction<number>){            
             const postId = action.payload
             const clickedPostDetails = getPostDetails(postId)!
     
@@ -34,9 +35,7 @@ export function postListReducer(state = initialState, action: any){
             lastActivePost && (postListCopy[indexOfLastActivePost] = getPostBasic(lastActivePost.id)!)
             postListCopy[indexOfClickedPost] = clickedPostDetails
 
-            return { data: postListCopy }
-
-        default: 
-            return state
-    }
-}
+            return { data: postListCopy }            
+        }
+    },
+})
