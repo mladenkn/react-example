@@ -20,6 +20,7 @@ export interface PostDetails {
 }
 
 export interface PostDetailsComment {
+    id: number
     user: UserBasic
     body: string
 }
@@ -152,6 +153,8 @@ export const users = {
       "title": "magnam facilis autem",
     },
   ];
+
+  let nextCommentId = 1;
   
   const postDetailsList: PostDetails[] = [
     {
@@ -165,6 +168,7 @@ export const users = {
       "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto",
       "comments": [
         {
+            id: nextCommentId++,
           "body": "laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium",
           user: {
             id: users[1].id,
@@ -172,6 +176,7 @@ export const users = {
           },
         },
         {
+            id: nextCommentId++,
           "body": "est natus enim nihil est dolore omnis voluptatem numquam\net omnis occaecati quod ullam at\nvoluptatem error expedita pariatur\nnihil sint nostrum voluptatem reiciendis et",
           user: {
             id: users[2].id,
@@ -179,6 +184,7 @@ export const users = {
           },
         },
         {
+            id: nextCommentId++,
           "body": "quia molestiae reprehenderit quasi aspernatur\naut expedita occaecati aliquam eveniet laudantium\nomnis quibusdam delectus saepe quia accusamus maiores nam est\ncum et ducimus et vero voluptates excepturi deleniti ratione",
           user: {
             id: users[1].id,
@@ -186,6 +192,7 @@ export const users = {
           },
         },
         {
+            id: nextCommentId++,
           "body": "non et atque\noccaecati deserunt quas accusantium unde odit nobis qui voluptatem\nquia voluptas consequuntur itaque dolor\net qui rerum deleniti ut occaecati",
           user: {
             id: users[3].id,
@@ -229,6 +236,7 @@ export const users = {
       "body": "ullam et saepe reiciendis voluptatem adipisci\nsit amet autem assumenda provident rerum culpa\nquis hic commodi nesciunt rem tenetur doloremque ipsam iure\nquis sunt voluptatem rerum illo velit",
       "comments": [
         {
+            id: nextCommentId++,
           "body": "doloribus at sed quis culpa deserunt consectetur qui praesentium\naccusamus fugiat dicta\nvoluptatem rerum ut voluptate autem\nvoluptatem repellendus aspernatur dolorem in",
           user: {
             id: users[2].id,
@@ -236,6 +244,7 @@ export const users = {
           },
         },
         {
+            id: nextCommentId++,
           "body": "maiores sed dolores similique labore et inventore et\nquasi temporibus esse sunt id et\neos voluptatem aliquam\naliquid ratione corporis molestiae mollitia quia et magnam dolor",
           user: {
             id: users[1].id,
@@ -243,6 +252,7 @@ export const users = {
           },
         },
         {
+            id: nextCommentId++,
           "body": "ut voluptatem corrupti velit\nad voluptatem maiores\net nisi velit vero accusamus maiores\nvoluptates quia aliquid ullam eaque",
           user: {
             id: users[1].id,
@@ -250,6 +260,7 @@ export const users = {
           },
         },
         {
+            id: nextCommentId++,
           "body": "sapiente assumenda molestiae atque\nadipisci laborum distinctio aperiam et ab ut omnis\net occaecati aspernatur odit sit rem expedita\nquas enim ipsam minus",
           user: {
             id: users[2].id,
@@ -269,6 +280,7 @@ export const users = {
       "body": "repudiandae veniam quaerat sunt sed\nalias aut fugiat sit autem sed est\nvoluptatem omnis possimus esse voluptatibus quis\nest aut tenetur dolor neque",
       "comments": [
         {
+            id: nextCommentId++,
           "body": "expedita maiores dignissimos facilis\nipsum est rem est fugit velit sequi\neum odio dolores dolor totam\noccaecati ratione eius rem velit",
           user: {
             id: users[2].id,
@@ -276,6 +288,7 @@ export const users = {
           },
         },
         {
+            id: nextCommentId++,
           "body": "fuga eos qui dolor rerum\ninventore corporis exercitationem\ncorporis cupiditate et deserunt recusandae est sed quis culpa\neum maiores corporis et",
           user: {
             id: users[1].id,
@@ -283,6 +296,7 @@ export const users = {
           },
         },
         {
+            id: nextCommentId++,
           "body": "vel quae voluptas qui exercitationem\nvoluptatibus unde sed\nminima et qui ipsam aspernatur\nexpedita magnam laudantium et et quaerat ut qui dolorum",
           user: {
             id: users[3].id,
@@ -302,6 +316,7 @@ export const users = {
       "body": "dolore placeat quibusdam ea quo vitae\nmagni quis enim qui quis quo nemo aut saepe\nquidem repellat excepturi ut quia\nsunt ut sequi eos ea sed quas",
       "comments": [
         {
+            id: nextCommentId++,
           "body": "vel quae voluptas qui exercitationem\nvoluptatibus unde sed\nminima et qui ipsam aspernatur\nexpedita magnam laudantium et et quaerat ut qui dolorum",
           user: {
             id: users[2].id,
@@ -309,6 +324,7 @@ export const users = {
           },
         },
         {
+            id: nextCommentId++,
           "body": "nihil ut voluptates blanditiis autem odio dicta rerum\nquisquam saepe et est\nsunt quasi nemo laudantium deserunt\nmolestias tempora quo quia",
           user: {
             id: users[1].id,
@@ -316,6 +332,7 @@ export const users = {
           },
         },
         {
+            id: nextCommentId++,
           "body": "iste ut laborum aliquid velit facere itaque\nquo ut soluta dicta voluptate\nerror tempore aut et\nsequi reiciendis dignissimos expedita consequuntur libero sed fugiat facilis",
           user: {
             id: users[3].id,

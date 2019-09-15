@@ -43,6 +43,7 @@ const usePostCommentListStyles = makeStyles({
     margin: '1em 0',
     padding: '0.5em',
     borderRadius: '1em',
+    display: 'block',
   },
   username: {
     fontSize: '1em',
@@ -57,9 +58,9 @@ function PostCommentList(p: {className?: string, comments: PostDetailsComment[]}
   return (
     <List disablePadding className={p.className}>
       {p.comments.map(c => (
-        <ListItem disableGutters className={classes.listItem}>
+        <ListItem key={c.id} disableGutters className={classes.listItem}>
+          <Typography className={classes.username}>{c.user.name}</Typography>
           <Typography className={classes.body}>
-            <Typography className={classes.username}>{c.user.name}</Typography>
             {c.body}
           </Typography>
         </ListItem>

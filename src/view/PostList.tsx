@@ -22,7 +22,7 @@ function PostList_(p: Props){
   return (
     <List className={p.className}>
       {p.posts.map(post => (
-        <ListItem>
+        <ListItem key={post.id}>
           {post.type === 'PostDetails' ?
             <PostDetailsCard post={post} raised /> :
             <PostCard onClick={() => p.onPostClick(post.id)} post={post} />

@@ -19,6 +19,7 @@ const initialState: PostListState = {
     data: postBasicList
 }
 
+// state is not mutated because of Immer!
 export const { reducer: postListReducer, actions: postListActions } = createSlice({
     initialState,
     reducers: {
@@ -31,11 +32,8 @@ export const { reducer: postListReducer, actions: postListActions } = createSlic
     
             const indexOfClickedPost = state.data.findIndex(p => p.id === postId)
             
-            const postListCopy = state.data.map(p => p)
-            lastActivePost && (postListCopy[indexOfLastActivePost] = getPostBasic(lastActivePost.id)!)
-            postListCopy[indexOfClickedPost] = clickedPostDetails
-
-            return { data: postListCopy }            
+            lastActivePost && (state.data[indexOfLastActivePost] = getPostBasic(lastActivePost.id)!)
+            state.data[indexOfClickedPost] = clickedPostDetails  
         }
     },
 })
