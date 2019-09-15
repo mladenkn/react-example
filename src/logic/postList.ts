@@ -1,31 +1,42 @@
 import { PostDetails, PostBasic, postBasicList, getPostDetails, getPostBasic } from "../data";
-import { useState } from "react";
 
-type FetchablePostDetails = PostDetails & {status: 'fetched' | 'fetching'}
+// type FetchablePostDetails = {
+//     data: PostDetails | undefined
+//     status: 'fetched' | 'fetching'
+// }
+
+// export interface PostListState {
+//     data: (PostBasic | FetchablePostDetails)[] | undefined
+//     status: 'fetched' | 'fetching'
+// }
 
 export interface PostListState {
-    data: (PostBasic | FetchablePostDetails)[] | undefined
-    status: 'fetched' | 'fetching'
+    data: (PostBasic | PostDetails)[]
 }
 
-export function usePostListLogic(){
+const initialState: PostListState = {
+    data: postBasicList
+}
 
-    const [postList, setPostList] = useState<(PostBasic | PostDetails)[]>(postBasicList)
+export function postListReducer(state = initialState, action: any){
+    switch(action.type){
+
+        case 'ON_POST_BASIC_CLICK': 
+            const postId = action.payload
+            const clickedPostDetails = getPostDetails(postId)!
     
-    function onPostBasicClick(id: number){
-        const clickedPostDetails = getPostDetails(id)!
+            const indexOfLastActivePost = state.data.findIndex(p => p.type === 'PostDetails')
+            const lastActivePost = state.data[indexOfLastActivePost]
+    
+            const indexOfClickedPost = state.data.findIndex(p => p.id === postId)
+            
+            const postListCopy = state.data.map(p => p)
+            lastActivePost && (postListCopy[indexOfLastActivePost] = getPostBasic(lastActivePost.id)!)
+            postListCopy[indexOfClickedPost] = clickedPostDetails
 
-        const indexOfLastActivePost = postList.findIndex(p => p.type === 'PostDetails')
-        const lastActivePost = postList[indexOfLastActivePost]
+            return { data: postListCopy }
 
-        const indexOfClickedPost = postList.findIndex(p => p.id === id)
-        
-        const postListCopy = postList.map(p => p)
-        lastActivePost && (postListCopy[indexOfLastActivePost] = getPostBasic(lastActivePost.id)!)
-        postListCopy[indexOfClickedPost] = clickedPostDetails
-        
-        setPostList(postListCopy)
+        default: 
+            return state
     }
-
-    return { postList, onPostBasicClick }
 }

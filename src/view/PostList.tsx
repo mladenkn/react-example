@@ -3,24 +3,36 @@ import { List, ListItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { PostCard } from './PostCard';
 import { PostDetailsCard } from './PostDetailsCard';
-import { usePostListLogic } from '../logic/postList';
+import { PostBasic, PostDetails } from '../data';
+import { connect } from 'react-redux';
+import { AppState } from '../logic/store';
 
 const useStyles = makeStyles({
 });
 
-export function PostList(p: {className?: string}){
+interface Props {
+  className?: string, 
+  posts: (PostBasic | PostDetails)[]
+  onPostClick: (id: number) => void
+}
+
+function PostList_(p: Props){
   const classes = useStyles()
-  const { postList, onPostBasicClick } = usePostListLogic()
   return (
     <List className={p.className}>
-      {postList.map(p => (
+      {p.posts.map(post => (
         <ListItem>
-          {p.type === 'PostDetails' ?
-            <PostDetailsCard post={p} raised /> :
-            <PostCard onClick={() => onPostBasicClick(p.id)} post={p} />
+          {post.type === 'PostDetails' ?
+            <PostDetailsCard post={post} raised /> :
+            <PostCard onClick={() => p.onPostClick(post.id)} post={post} />
           }
         </ListItem>
       ))}
     </List>
   )
 }
+
+export const PostList = connect(
+  (s: AppState) => ({ posts: s.postList.data}),
+  d => ({ onPostClick: (id: number) => d({type: 'ON_POST_BASIC_CLICK', payload: id}) })
+)(PostList_)
