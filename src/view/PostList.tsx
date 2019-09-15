@@ -14,7 +14,7 @@ const useStyles = makeStyles({
 interface Props {
   className?: string, 
   posts: (PostBasic | PostDetails)[]
-  onPostClick: (id: number) => void
+  onPostBasicClick: (id: number) => void
 }
 
 function PostList_(p: Props){
@@ -25,7 +25,7 @@ function PostList_(p: Props){
         <ListItem key={post.id}>
           {post.type === 'PostDetails' ?
             <PostDetailsCard post={post} raised /> :
-            <PostCard onClick={() => p.onPostClick(post.id)} post={post} />
+            <PostCard onClick={() => p.onPostBasicClick(post.id)} post={post} />
           }
         </ListItem>
       ))}
@@ -35,5 +35,5 @@ function PostList_(p: Props){
 
 export const PostList = connect(
   (s: AppState) => ({ posts: s.postList.data}),
-  { onPostClick: postListActions.onPostBasicClick }
+  { onPostBasicClick: postListActions.onPostBasicClick }
 )(PostList_)

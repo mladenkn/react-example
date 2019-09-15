@@ -2,6 +2,7 @@ import { PostDetails, PostBasic, postBasicList, getPostDetails, getPostBasic } f
 import { Middleware, } from "redux-starter-kit";
 import { AppState } from "./store";
 import { createReducer, ActionType, getType, createAction } from 'typesafe-actions';
+import { fetchPostDetails } from "./postListDataProviders";
 
 // type FetchablePostDetails = {
 //     data: PostDetails | undefined
@@ -13,12 +14,16 @@ import { createReducer, ActionType, getType, createAction } from 'typesafe-actio
 //     status: 'fetched' | 'fetching'
 // }
 
-export interface PostListState {
+interface State {
     data: (PostBasic | PostDetails)[]
 }
 
-const initialState: PostListState = {
+const initialState: State = {
     data: postBasicList
+}
+
+const publicActions = {
+    onPostBasicClick: createAction('postList/onPostBasicClick', a => (id: number) => a(id)),
 }
 
 const privateActions = {
@@ -27,21 +32,19 @@ const privateActions = {
     ),
 }
 
-const publicActions = {
-    onPostBasicClick: createAction('postList/onPostBasicClick', a => (id: number) => a(id)),
-}
-
 const a = { ...privateActions, ...publicActions }
-export const postListActions = publicActions;
 type RootAction = ActionType<typeof a>
 
-export const postListMiddleware: Middleware<{}, AppState> = store => next => (action: RootAction) => {
+const middleware: Middleware<{}, AppState> = store => next => (action: RootAction) => {
 
     switch(action.type){
 
         case getType(a.onPostBasicClick): 
             const state = store.getState().postList
             const postId = action.payload;
+
+            fetchPostDetails(postId).then(console.log)
+
             const nextSelectedPostDetails = getPostDetails(postId)!;
             const currentlySelectedPost = state.data.find(p => p.type === 'PostDetails');
             const currentlySelectedPostBasic = currentlySelectedPost && getPostBasic(currentlySelectedPost.id)
@@ -52,7 +55,7 @@ export const postListMiddleware: Middleware<{}, AppState> = store => next => (ac
     return next(action)
 }
 
-export const postListReducer = createReducer<PostListState, RootAction>(initialState)
+const reducer = createReducer<State, RootAction>(initialState)
     .handleAction(a.setSelectedPost, (state, action) => {
         const {nextSelectedDetails, currentlySelectedBasic} = action.payload
         
@@ -68,3 +71,10 @@ export const postListReducer = createReducer<PostListState, RootAction>(initialS
 
         return {data: postListCopy}
     })
+
+export {
+    publicActions as postListActions,    
+    middleware as postListMiddleware,
+    reducer as postListReducer
+}
+export type PostListState = State
