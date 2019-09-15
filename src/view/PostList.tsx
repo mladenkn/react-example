@@ -17,7 +17,7 @@ interface Props {
   onPostBasicClick: (id: number) => void
 }
 
-function PostList_(p: Props){
+export function PostList_(p: Props){
   const classes = useStyles()
   return (
     <List className={p.className}>
@@ -34,6 +34,6 @@ function PostList_(p: Props){
 }
 
 export const PostList = connect(
-  (s: AppState) => ({ posts: s.postList.data}),
+  (s: AppState) => ({}),
   { onPostBasicClick: postListActions.onPostBasicClick }
 )(PostList_)

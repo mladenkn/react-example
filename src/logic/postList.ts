@@ -28,7 +28,8 @@ const publicActions = {
 
 const privateActions = {
     setSelectedPost: createAction('postList/setSelectedPost', 
-        a => (nextSelectedDetails: PostDetails, currentlySelectedBasic?: PostBasic) => a({nextSelectedDetails, currentlySelectedBasic})
+        a => (nextSelectedDetails: PostDetails, currentlySelectedBasic?: PostBasic) =>
+            a({nextSelectedDetails, currentlySelectedBasic})
     ),
 }
 
