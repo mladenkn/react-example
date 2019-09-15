@@ -13,7 +13,7 @@ export function AppRoot(){
   const classes = useStyles()
   return (
     <div>
-      <PostList className={classes.postList} posts={postBasicList} />
+      <PostList className={classes.postList} />
     </div>
   )
 }

@@ -329,3 +329,7 @@ export const users = {
   export function getPostDetails(id: number){
     return postDetailsList.find(p => p.id === id)
   }
+
+  export function getPostBasic(id: number){
+    return postBasicList.find(p => p.id === id)
+  }
