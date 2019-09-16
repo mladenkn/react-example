@@ -3,6 +3,7 @@ import { Middleware, } from "redux-starter-kit";
 import { AppState } from "./store";
 import { createReducer, ActionType, getType, createAction } from 'typesafe-actions';
 import { fetchPostDetails, fetchPostBasic } from "./postListDataProviders";
+import { takeEvery, put, call } from "@redux-saga/core/effects";
 
 // type FetchablePostDetails = {
 //     data: PostDetails | undefined
@@ -22,35 +23,35 @@ const initialState: State = {
     data: postBasicList
 }
 
+const actionTypes = {
+    onPostBasicClick: 'postList/onPostBasicClick',
+    onFetchingPostDetails: 'postList/onFetchingPostDetails',
+    setSelectedPost: 'postList/setSelectedPost',
+}
+
 const publicActions = {
-    onPostBasicClick: createAction('postList/onPostBasicClick', p => (id: number) => p(id)),
+    onPostBasicClick: createAction(actionTypes.onPostBasicClick, p => (id: number) => p(id)),
 }
 
 const privateActions = {
-    onFetchingPostDetails: createAction('postList/onFetchingPostDetails', p => (postId: number) => p(postId)),
-    onFetchedPostDetails: createAction('postList/setSelectedPost', 
+    onFetchingPostDetails: createAction(actionTypes.onFetchingPostDetails, p => (postId: number) => p(postId)),
+    onFetchedPostDetails: createAction(actionTypes.setSelectedPost, 
         p => (nextSelectedDetails: PostDetails) => p(nextSelectedDetails)
     ),
 }
 
 const a = { ...privateActions, ...publicActions }
 type RootAction = ActionType<typeof a>
+ 
+function* onPostBasicClick(action: ReturnType<typeof a.onPostBasicClick>){
+    const postId = action.payload;            
+    yield put(a.onFetchingPostDetails(postId));
+    const nextSelectedPostDetails: PostDetails = yield call(fetchPostDetails, postId)
+    yield put(a.onFetchedPostDetails(nextSelectedPostDetails))
+}
 
-const middleware: Middleware<{}, AppState> = store => next => (action: RootAction) => {
-
-    switch(action.type){
-
-        case getType(a.onPostBasicClick): 
-            const postId = action.payload;            
-            store.dispatch(a.onFetchingPostDetails(postId));
-            fetchPostDetails(postId)
-                .then(nextSelectedPostDetails => {
-                    store.dispatch(a.onFetchedPostDetails(nextSelectedPostDetails))
-                });
-            break;
-    }
-
-    return next(action)
+function* saga(){
+    yield takeEvery(actionTypes.onPostBasicClick, onPostBasicClick)
 }
 
 const reducer = createReducer<State, RootAction>(initialState)
@@ -78,7 +79,8 @@ const reducer = createReducer<State, RootAction>(initialState)
 
 export {
     publicActions as postListActions,    
-    middleware as postListMiddleware,
-    reducer as postListReducer
+    // middleware as postListMiddleware,
+    reducer as postListReducer,
+    saga as postListSaga
 }
 export type PostListState = State
