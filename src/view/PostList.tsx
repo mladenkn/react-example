@@ -6,8 +6,8 @@ import { PostDetailsCard } from './PostDetailsCard';
 import { PostBasic, PostDetails } from '../data';
 import { connect } from 'react-redux';
 import { AppState } from '../logic/store';
-import { postListActions } from '../logic/postList';
-
+import { onPostBasicClick } from '../logic/postList';
+ 
 const useStyles = makeStyles({
 });
 
@@ -35,5 +35,5 @@ export function PostList_(p: Props){
 
 export const PostList = connect(
   (s: AppState) => ({}),
-  { onPostBasicClick: postListActions.onPostBasicClick }
+  { onPostBasicClick }
 )(PostList_)
