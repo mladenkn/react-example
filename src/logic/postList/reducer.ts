@@ -3,6 +3,7 @@ import { postBasicList } from '../../data';
 import * as a from "./actions";
 import { PostListState, PostDetailsFetchContext, PostBasic } from './types';
 import produce from 'immer';
+import { findAndUpdate } from '../../utils';
 
 const initialState: PostListState = {
     data: postBasicList
@@ -11,33 +12,38 @@ const initialState: PostListState = {
 type RootAction = ActionType<typeof import('./actions')>;
 
 export const reducer = createReducer<PostListState, RootAction>(initialState)
-    .handleAction(a.onFetchingPostDetails, (s, action) => produce(s, state => {        
-        const currentlySelectedPostDetailsIndex = state.data.findIndex(p => p.type === 'PostDetailsFetchContext');
-        if(currentlySelectedPostDetailsIndex > -1){
-            const currentlySelectedPostDetails = state.data[currentlySelectedPostDetailsIndex] as PostDetailsFetchContext
-            state.data[currentlySelectedPostDetailsIndex] = currentlySelectedPostDetails.basic
-        }
+    .handleAction(a.onFetchingPostDetails, (s, action) => produce(s, state => {
+        
+        findAndUpdate(
+            state.data, 
+            postContext => postContext.type === 'PostDetailsFetchContext',
+            postContext => (postContext as PostDetailsFetchContext).basic
+        )
         const postId = action.payload
-        const selectedPostIndex = state.data.findIndex(p => p.type === 'PostBasic' && p.id == postId)
-        state.data[selectedPostIndex] = {
-            type: 'PostDetailsFetchContext',
-            basic: state.data[selectedPostIndex] as PostBasic,
-            details: undefined,
-            status: 'fetching'
-        }
+
+        findAndUpdate(
+            state.data, 
+            postContext => postContext.type === 'PostBasic' && postContext.id == postId,
+            postContext => ({
+                type: 'PostDetailsFetchContext',
+                basic: postContext as PostBasic,
+                details: undefined,
+                status: 'fetching'
+            } as PostDetailsFetchContext)
+        )
     }))
     .handleAction(a.onFetchedPostDetails, (s, action) => produce(s, state => {
-        const nextSelectedDetails = action.payload
-        const postDetailsFetchContext = state.data.find(p => 
-            p.type === 'PostDetailsFetchContext' && 
-            p.status === 'fetching' &&
-            p.basic.id === nextSelectedDetails.id
+        const postDetails = action.payload
+        findAndUpdate(
+            state.data,
+            postContext => 
+                postContext.type === 'PostDetailsFetchContext' && 
+                postContext.status === 'fetching' &&
+                postContext.basic.id === postDetails.id,
+            postContext => {
+                const casted = postContext as PostDetailsFetchContext
+                casted.status = 'fetched'
+                casted.details = postDetails
+            }
         );
-        if(postDetailsFetchContext){
-            const casted = postDetailsFetchContext as PostDetailsFetchContext
-            casted.status = 'fetched'
-            casted.details = nextSelectedDetails
-        }
-        else 
-            throw new Error()
     }))
