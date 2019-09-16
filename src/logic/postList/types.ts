@@ -32,7 +32,7 @@ export interface PostDetailsFetchContext {
     status: 'fetched' | 'fetching'
 }
 
-export interface State {
+export interface PostListState {
     data: (PostBasic | PostDetailsFetchContext)[]
 }
 

@@ -1,7 +1,8 @@
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit'
-import { postListReducer, PostListState, postListSaga } from './postList'
+import { postListReducer, postListSaga } from './postList'
 import { combineReducers, applyMiddleware } from 'redux'
 import createSagaMiddleware from '@redux-saga/core'
+import { PostListState } from './postList/types';
 
 export interface AppState {
     postList: PostListState

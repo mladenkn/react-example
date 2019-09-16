@@ -1,16 +1,16 @@
 import { ActionType, createReducer } from 'typesafe-actions';
 import { postBasicList } from '../../data';
 import * as a from "./actions";
-import { State, PostDetailsFetchContext, PostBasic } from './shared';
+import { PostListState, PostDetailsFetchContext, PostBasic } from './types';
 import produce from 'immer';
 
-const initialState: State = {
+const initialState: PostListState = {
     data: postBasicList
 }
 
 type RootAction = ActionType<typeof import('./actions')>;
 
-export const reducer = createReducer<State, RootAction>(initialState)
+export const reducer = createReducer<PostListState, RootAction>(initialState)
     .handleAction(a.onFetchingPostDetails, (s, action) => produce(s, state => {        
         const currentlySelectedPostDetailsIndex = state.data.findIndex(p => p.type === 'PostDetailsFetchContext');
         if(currentlySelectedPostDetailsIndex > -1){
