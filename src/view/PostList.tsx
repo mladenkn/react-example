@@ -63,7 +63,7 @@ export function PostListPresenter(p: Props){
     if(postContext.type === 'PostBasic')
       return (
         <ListItem key={postContext.id}>
-          <PostCard onClick={() => p.onPostBasicClick(postContext.id)} post={postContext} />
+          <PostCard clickable onClick={() => p.onPostBasicClick(postContext.id)} post={postContext} />
         </ListItem>
       )
     else {

@@ -2,19 +2,10 @@ import React from 'react'
 import { makeStyles } from "@material-ui/styles"
 import { Card, List, ListItem, Typography, colors } from "@material-ui/core";
 import { PostDetails, PostDetailsComment } from '../logic/postList/types'
+import { PostCard } from './PostCard';
+import { Username } from './Username';
 
 const usePostDetailsCardStyles = makeStyles({
-  root: {
-    padding: '0.5em',
-  },
-  title: {
-    fontSize: '1.3em',
-    paddingLeft: '0.1em',
-  },
-  username: {
-    fontSize: '0.8em',
-    paddingLeft: '0.4em',
-  },
   body: {
     marginTop: '0.5em',
   },
@@ -28,12 +19,10 @@ const usePostDetailsCardStyles = makeStyles({
 export function PostDetailsCard(p: {post: PostDetails, raised: boolean}){
   const classes = usePostDetailsCardStyles()
   return (
-    <Card raised={p.raised} className={classes.root}>
-      <Typography className={classes.title}>{p.post.title}</Typography>
-      <Typography className={classes.username}>{p.post.user.name}</Typography>
+    <PostCard post={p.post}>
       <Typography className={classes.body}>{p.post.body}</Typography>
       <PostCommentList className={classes.commentList} comments={p.post.comments} />
-    </Card>
+    </PostCard>
   )
 }
 
@@ -47,6 +36,7 @@ const usePostCommentListStyles = makeStyles({
   },
   username: {
     fontSize: '1em',
+    display: 'block',
   },
   body: {
     fontSize: '1em',
@@ -59,7 +49,7 @@ function PostCommentList(p: {className?: string, comments: PostDetailsComment[]}
     <List disablePadding className={p.className}>
       {p.comments.map(c => (
         <ListItem key={c.id} disableGutters className={classes.listItem}>
-          <Typography className={classes.username}>{c.user.name}</Typography>
+          <Username className={classes.username} name={c.user.name} />
           <Typography className={classes.body}>
             {c.body}
           </Typography>

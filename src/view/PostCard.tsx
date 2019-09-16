@@ -1,7 +1,8 @@
 import { makeStyles } from "@material-ui/styles"
 import { Card, Typography, CardActionArea } from "@material-ui/core"
-import React from "react"
+import React, { Fragment } from "react"
 import { PostBasic } from '../logic/postList/types'
+import { Username } from "./Username"
 
 const usePostCardStyles = makeStyles({
   root: {
@@ -14,17 +15,38 @@ const usePostCardStyles = makeStyles({
   username: {
     fontSize: '0.8em',
     paddingLeft: '0.2em',
+    display: 'block',
   },
 })
 
-export function PostCard(p: {post: PostBasic, onClick: () => void}){
+interface Props {
+  post: Omit<PostBasic, 'type'>, 
+  clickable?: boolean
+  onClick?: () => void
+  children?: JSX.Element | JSX.Element[]
+}
+
+export function PostCard(p: Props){
   const classes = usePostCardStyles()
+
+  const content = (
+    <Fragment>
+      <Typography className={classes.title}>{p.post.title}</Typography>
+      <Username className={classes.username} name={p.post.user.name} />
+      {p.children}
+    </Fragment>
+  );
+
   return (
     <Card>
-      <CardActionArea disableRipple onClick={p.onClick} className={classes.root}>
-        <Typography className={classes.title}>{p.post.title}</Typography>
-        <Typography className={classes.username}>{p.post.user.name}</Typography>
-      </CardActionArea>
+      {p.clickable ?
+        <CardActionArea disableRipple onClick={p.onClick} className={classes.root}>
+          {content}
+        </CardActionArea> : 
+        <div className={classes.root}>
+          {content}
+        </div>
+      }
     </Card>
   )
 }
