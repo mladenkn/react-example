@@ -2,7 +2,7 @@ import { PostDetails, PostBasic, postBasicList, getPostDetails, getPostBasic } f
 import { Middleware, } from "redux-starter-kit";
 import { AppState } from "./store";
 import { createReducer, ActionType, getType, createAction } from 'typesafe-actions';
-import { fetchPostDetails } from "./postListDataProviders";
+import { fetchPostDetails, fetchPostBasic } from "./postListDataProviders";
 
 // type FetchablePostDetails = {
 //     data: PostDetails | undefined
@@ -23,13 +23,14 @@ const initialState: State = {
 }
 
 const publicActions = {
-    onPostBasicClick: createAction('postList/onPostBasicClick', a => (id: number) => a(id)),
+    onPostBasicClick: createAction('postList/onPostBasicClick', p => (id: number) => p(id)),
 }
 
 const privateActions = {
-    setSelectedPost: createAction('postList/setSelectedPost', 
-        a => (nextSelectedDetails: PostDetails, currentlySelectedBasic?: PostBasic) =>
-            a({nextSelectedDetails, currentlySelectedBasic})
+    onFetchingPostDetails: createAction('postList/onFetchingPostDetails', p => (postId: number) => p(postId)),
+    onFetchedPostDetails: createAction('postList/setSelectedPost', 
+        p => (nextSelectedDetails: PostDetails, currentlySelectedBasic?: PostBasic) =>
+            p({nextSelectedDetails, currentlySelectedBasic})
     ),
 }
 
@@ -41,15 +42,12 @@ const middleware: Middleware<{}, AppState> = store => next => (action: RootActio
     switch(action.type){
 
         case getType(a.onPostBasicClick): 
-            const state = store.getState().postList
-            const postId = action.payload;
-
-            fetchPostDetails(postId).then(console.log)
-
-            const nextSelectedPostDetails = getPostDetails(postId)!;
-            const currentlySelectedPost = state.data.find(p => p.type === 'PostDetails');
-            const currentlySelectedPostBasic = currentlySelectedPost && getPostBasic(currentlySelectedPost.id)
-            store.dispatch(a.setSelectedPost(nextSelectedPostDetails, currentlySelectedPostBasic))
+            const postId = action.payload;            
+            store.dispatch(a.onFetchingPostDetails(postId));
+            fetchPostDetails(postId)
+                .then(nextSelectedPostDetails => {
+                    store.dispatch(a.onFetchedPostDetails(nextSelectedPostDetails))
+                });
             break;
     }
 
@@ -57,7 +55,22 @@ const middleware: Middleware<{}, AppState> = store => next => (action: RootActio
 }
 
 const reducer = createReducer<State, RootAction>(initialState)
-    .handleAction(a.setSelectedPost, (state, action) => {
+    .handleAction(a.onFetchingPostDetails, (state, action) => {
+        const currentlySelectedPostDetailsIndex = state.data.findIndex(p => p.type === 'PostDetails');
+        if(currentlySelectedPostDetailsIndex > -1){
+            const postListCopy = state.data.map(p => p)
+            const currentlySelectedPostDetails = state.data[currentlySelectedPostDetailsIndex]
+            postListCopy[currentlySelectedPostDetailsIndex] = {
+                ...currentlySelectedPostDetails,
+                type: 'PostBasic'
+            }
+            return { data: postListCopy }
+        }
+        else
+            return state;
+    })
+    .handleAction(a.onFetchedPostDetails, (state, action) => {
+
         const {nextSelectedDetails, currentlySelectedBasic} = action.payload
         
         const postListCopy = state.data.map(p => p)

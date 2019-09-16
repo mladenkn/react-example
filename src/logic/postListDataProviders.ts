@@ -53,7 +53,7 @@ async function fetchPostComments(postId: number): Promise<PostDetailsComment[]> 
 }
 
 export async function fetchPostDetails(postId: number): Promise<PostDetails> {
-    console.log('fetcheing')
+    console.log('fetching post details')
     const post = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`).then(r => r.json())
     console.log('fetched post')
     const user = await fetchUserBasic(post.userId)
@@ -62,3 +62,13 @@ export async function fetchPostDetails(postId: number): Promise<PostDetails> {
     console.log('fetched comments')
     return { type: 'PostDetails', id: post.id, title: post.title, body: post.body, user, comments }
 } 
+
+export async function fetchPostBasic(postId: number): Promise<PostBasic> {
+    console.log('fetching post basic')
+    const post = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`).then(r => r.json())
+    console.log('fetching post')
+    const user = await fetchUserBasic(post.userId)
+    console.log('fetching user')
+    console.log('fetchPostBasic complete')
+    return { type: 'PostBasic', id: post.id, title: post.title, user }
+}
