@@ -29,8 +29,7 @@ const publicActions = {
 const privateActions = {
     onFetchingPostDetails: createAction('postList/onFetchingPostDetails', p => (postId: number) => p(postId)),
     onFetchedPostDetails: createAction('postList/setSelectedPost', 
-        p => (nextSelectedDetails: PostDetails, currentlySelectedBasic?: PostBasic) =>
-            p({nextSelectedDetails, currentlySelectedBasic})
+        p => (nextSelectedDetails: PostDetails) => p(nextSelectedDetails)
     ),
 }
 
@@ -70,19 +69,10 @@ const reducer = createReducer<State, RootAction>(initialState)
             return state;
     })
     .handleAction(a.onFetchedPostDetails, (state, action) => {
-
-        const {nextSelectedDetails, currentlySelectedBasic} = action.payload
-        
-        const postListCopy = state.data.map(p => p)
-
-        if(currentlySelectedBasic){
-            const indexOfCurrentlySelected = state.data.findIndex(p => p.id === currentlySelectedBasic.id)
-            postListCopy[indexOfCurrentlySelected] = currentlySelectedBasic
-        }
-        
+        const nextSelectedDetails = action.payload        
+        const postListCopy = state.data.map(p => p)        
         const indexOfNextSelected = state.data.findIndex(p => p.id === nextSelectedDetails.id)        
         postListCopy[indexOfNextSelected] = nextSelectedDetails
-
         return {data: postListCopy}
     })
 
