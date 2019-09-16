@@ -67,7 +67,7 @@ export function PostListPresenter(p: Props){
         </ListItem>
       )
     else {
-      if(postContext.status === 'fetching')
+      if(postContext.status === AsyncOperationStatus.Processing)
         return (
           <ListItem key={postContext.basic.id}>
             <PostDetailsLoadingCard post={postContext.basic} raised />

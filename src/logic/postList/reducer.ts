@@ -19,7 +19,7 @@ export const reducer = createReducer<PostListState, RootAction>(initialState)
             postContext => {
                 const casted = postContext as PostDetailsFetchContext
                 //take details as basic for the case when some data might have changed on backend
-                return casted.status === 'fetched' ?
+                return casted.status === AsyncOperationStatus.Completed ?
                     {...casted.details!, type: 'PostBasic'} as PostBasic :
                     casted.basic                    
             }
@@ -31,7 +31,7 @@ export const reducer = createReducer<PostListState, RootAction>(initialState)
                 type: 'PostDetailsFetchContext',
                 basic: postContext as PostBasic,
                 details: undefined,
-                status: 'fetching'
+                status: AsyncOperationStatus.Processing
             } as PostDetailsFetchContext)
         )
     }))
@@ -41,11 +41,11 @@ export const reducer = createReducer<PostListState, RootAction>(initialState)
             state.data!,
             postContext => 
                 postContext.type === 'PostDetailsFetchContext' && 
-                postContext.status === 'fetching' &&
+                postContext.status === AsyncOperationStatus.Processing &&
                 postContext.basic.id === postDetails.id,
             postContext => {
                 const casted = postContext as PostDetailsFetchContext
-                casted.status = 'fetched'
+                casted.status = AsyncOperationStatus.Completed
                 casted.details = postDetails
             }
         );        
