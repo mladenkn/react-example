@@ -1,15 +1,15 @@
 import { ActionType, createReducer } from 'typesafe-actions';
 import * as a from "./actions";
-import { PostListState, PostDetailsFetchContext, PostBasic } from './types';
+import { PostListState, PostDetailsFetchContext, PostBasic, PostList } from './types';
 import produce from 'immer';
 import { findAndUpdate, AsyncOperationStatus } from '../../utils';
-
-const initialState: PostListState = {
-    data: undefined,
-    status: AsyncOperationStatus.NotInitiated
-}
+import { createFetchableDataStateFactory } from '../fetchableState';
 
 type RootAction = ActionType<typeof import('./actions')>;
+
+const stateFactory = createFetchableDataStateFactory<PostList>();
+
+const initialState: PostListState = stateFactory.initial();
 
 export const reducer = createReducer<PostListState, RootAction>(initialState)
     .handleAction(a.onFetchingPostDetails, (s, action) => produce(s, state => {        
@@ -50,10 +50,5 @@ export const reducer = createReducer<PostListState, RootAction>(initialState)
             }
         );        
     }))
-    .handleAction(a.fetchPostListSuccess, (s, action) => produce(s, state => {
-        state.status = AsyncOperationStatus.Completed
-        state.data = action.payload
-    }))
-    .handleAction(a.fetchPostList, (s, action) => produce(s, state => {
-        state.status = AsyncOperationStatus.Processing
-    }))
+    .handleAction(a.fetchPostListSuccess, (s, action) => stateFactory.onFetchComplete(action.payload))
+    .handleAction(a.fetchPostList, stateFactory.onFetchBegin)

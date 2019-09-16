@@ -1,4 +1,5 @@
-import { Fetchable, AsyncOperationStatus } from "../../utils";
+import { AsyncOperationStatus } from "../../utils";
+import { Fetchable } from "../fetchableState";
 
 export interface UserBasic {
     id: number
@@ -34,6 +35,6 @@ export interface PostDetailsFetchContext {
     status: AsyncOperationStatus
 }
 
-export type PostListState = Fetchable<(PostBasic | PostDetailsFetchContext)[]>
+export type PostListState = Fetchable<PostList>
 
 export type PostList = (PostBasic | PostDetailsFetchContext)[]

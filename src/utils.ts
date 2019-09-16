@@ -16,11 +16,6 @@ export enum AsyncOperationStatus {
     NotInitiated='NotInitiated', Processing='Processing', Completed='Completed', Errored='Errored'
 }
 
-export interface Fetchable<TWrapped> {
-    data?: TWrapped
-    status: AsyncOperationStatus
-}
-
 export function getRandomInt(min: number, max: number){
     return Math.floor(Math.random() * max) + min
 }
