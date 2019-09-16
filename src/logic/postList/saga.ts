@@ -11,8 +11,13 @@ function* onPostBasicClick(action: ReturnType<typeof a.onPostBasicClick>){
 }
 
 function* fetchPostList(){
-    const posts = yield call(fetchPostBasicList)
-    yield put(a.fetchPostListSuccess(posts))
+    try {
+        const posts = yield call(fetchPostBasicList)
+        yield put(a.fetchPostListSuccess(posts))
+    }
+    catch {
+        yield put(a.fetchPostListFailure())
+    }
 }
 
 export default function*(){

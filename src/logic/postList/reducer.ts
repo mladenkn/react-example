@@ -34,7 +34,7 @@ export const reducer = createReducer<PostListState, RootAction>(initialState)
                 status: AsyncOperationStatus.Processing
             } as PostDetailsFetchContext)
         )
-    }))
+    })) 
     .handleAction(a.onFetchedPostDetails, (s, action) => produce(s, state => {
         const postDetails = action.payload
         findAndUpdate(
@@ -48,7 +48,8 @@ export const reducer = createReducer<PostListState, RootAction>(initialState)
                 casted.status = AsyncOperationStatus.Completed
                 casted.details = postDetails
             }
-        );        
+        );
     }))
-    .handleAction(a.fetchPostListSuccess, (s, action) => stateFactory.onFetchComplete(action.payload))
     .handleAction(a.fetchPostList, stateFactory.onFetchBegin)
+    .handleAction(a.fetchPostListSuccess, (s, action) => stateFactory.onFetchComplete(action.payload))
+    .handleAction(a.fetchPostListFailure, stateFactory.onFetchFailure)

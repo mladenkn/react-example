@@ -13,3 +13,4 @@ export const onFetchedPostDetails = createAction('postList/setSelectedPost',
 export const fetchPostList = createAction('postList/fetchPostList')
 export const fetchPostListSuccess = createAction('postList/fetchPostListSucces', 
     p => (postList: PostBasic[]) => p(postList))
+export const fetchPostListFailure = createAction('postList/fetchPostListFailure')
