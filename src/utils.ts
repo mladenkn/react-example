@@ -11,3 +11,12 @@ export function findAndUpdate<T>(
             arr[elementIndex] = newElement;
     }
 }
+
+export enum AsyncOperationStatus {
+    NotInitiated='NotInitiated', Processing='Processing', Completed='Completed', Errored='Errored'
+}
+
+export interface Fetchable<TWrapped> {
+    data?: TWrapped
+    status: AsyncOperationStatus
+}

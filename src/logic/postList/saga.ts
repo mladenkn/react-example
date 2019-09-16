@@ -1,9 +1,8 @@
 import { takeEvery, put, call } from "@redux-saga/core/effects";
 import * as a from "./actions";
 import { actionTypes } from "./actions";
-import { PostDetails } from "../../data";
-import { fetchPostDetails } from "./dataProviders";
-
+import { PostDetails } from "./types";
+import { fetchPostDetails, fetchPostBasicList } from "./dataProviders";
  
 function* onPostBasicClick(action: ReturnType<typeof a.onPostBasicClick>){
     const postId = action.payload;            
@@ -12,6 +11,12 @@ function* onPostBasicClick(action: ReturnType<typeof a.onPostBasicClick>){
     yield put(a.onFetchedPostDetails(nextSelectedPostDetails))
 }
 
+function* fetchPostList(){
+    const posts = yield call(fetchPostBasicList)
+    yield put(a.fetchPostListSuccess(posts))
+}
+
 export default function*(){
     yield takeEvery(actionTypes.onPostBasicClick, onPostBasicClick)
+    yield takeEvery(actionTypes.fetchPostList, fetchPostList)
 }

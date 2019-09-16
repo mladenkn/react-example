@@ -1,3 +1,5 @@
+import { Fetchable } from "../../utils";
+
 export interface UserBasic {
     id: number
     name: string
@@ -32,8 +34,6 @@ export interface PostDetailsFetchContext {
     status: 'fetched' | 'fetching'
 }
 
-export interface PostListState {
-    data: (PostBasic | PostDetailsFetchContext)[]
-}
+export type PostListState = Fetchable<(PostBasic | PostDetailsFetchContext)[]>
 
-export type PostList = (PostBasic | PostDetails)[]
+export type PostList = (PostBasic | PostDetailsFetchContext)[]

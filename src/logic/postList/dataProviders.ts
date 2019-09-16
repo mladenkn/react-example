@@ -47,3 +47,13 @@ export async function fetchPostBasic(postId: number): Promise<PostBasic> {
     console.log('fetchPostBasic complete')
     return { type: 'PostBasic', id: post.id, title: post.title, user }
 }
+
+export async function fetchPostBasicList(): Promise<PostBasic[]> {
+    const posts = await fetch(`https://jsonplaceholder.typicode.com/posts`).then(r => r.json())  
+    return Promise.all(posts.map(async (p: any) => ({
+        type: 'PostBasic',
+        id: p.id,
+        title: p.title,
+        user: await fetchUserBasic(p.userId)
+    })))
+}

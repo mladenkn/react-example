@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from "@material-ui/styles"
-import { Card, List, ListItem, Typography, colors, CircularProgress } from "@material-ui/core"
+import { Card, Typography, CircularProgress } from "@material-ui/core"
 import { PostBasic } from '../logic/postList/types'
 
 const usePostDetailsLoadingCardStyles = makeStyles({

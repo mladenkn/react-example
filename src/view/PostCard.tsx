@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/styles"
 import { Card, Typography, CardActionArea } from "@material-ui/core"
 import React from "react"
-import { PostBasic } from "../data"
+import { PostBasic } from '../logic/postList/types'
 
 const usePostCardStyles = makeStyles({
   root: {
