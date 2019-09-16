@@ -1,29 +1,4 @@
-export interface UserBasic {
-    id: number
-    name: string
-}
-
-export interface PostBasic {
-    type: 'PostBasic'
-    id: number
-    title: string
-    user: UserBasic
-}
-
-export interface PostDetails {
-    type: 'PostDetails'
-    id: number
-    title: string
-    user: UserBasic
-    body: string
-    comments: PostDetailsComment[]
-}
-
-export interface PostDetailsComment {
-    id: number
-    user: UserBasic
-    body: string
-}
+import { PostDetails, PostBasic, UserBasic, PostDetailsComment } from "./shared"
 
 function getRandomInt(min: number, max: number){
     return Math.floor(Math.random() * max) + min

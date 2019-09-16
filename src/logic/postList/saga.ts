@@ -2,7 +2,7 @@ import { takeEvery, put, call } from "@redux-saga/core/effects";
 import * as a from "./actions";
 import { actionTypes } from "./actions";
 import { PostDetails } from "../../data";
-import { fetchPostDetails } from "../postListDataProviders";
+import { fetchPostDetails } from "./dataProviders";
 
  
 function* onPostBasicClick(action: ReturnType<typeof a.onPostBasicClick>){
