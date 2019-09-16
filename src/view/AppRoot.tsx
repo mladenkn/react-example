@@ -1,7 +1,7 @@
 import React from 'react';
 import { PostList } from './PostList';
 import { makeStyles } from '@material-ui/styles';
-import { PostListState } from '../logic/postList';
+import { PostList as PostListData, selectPostList } from '../logic/postList';
 import { connect } from 'react-redux';
 import { AppState } from '../logic/store';
 
@@ -11,15 +11,15 @@ const useStyles = makeStyles({
   }
 });
 
-export function AppRoot_(p: {posts: PostListState}){
+export function AppRoot_(p: {posts: PostListData}){
   const classes = useStyles()
   return (
     <div>
-      <PostList className={classes.postList} posts={p.posts.data} />
+      <PostList className={classes.postList} posts={p.posts} />
     </div>
   )
 }
 
 export const AppRoot = connect(
-  (s: AppState) => ({ posts: s.postList }),
+  (s: AppState) => ({ posts: selectPostList(s.postList) }),
 )(AppRoot_) 

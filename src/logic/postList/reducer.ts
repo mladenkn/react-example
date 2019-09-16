@@ -1,7 +1,8 @@
 import { ActionType, createReducer } from 'typesafe-actions';
-import { postBasicList, PostBasic, PostDetails } from '../../data';
+import { postBasicList } from '../../data';
 import * as a from "./actions";
-import { State } from './shared';
+import { State, PostDetailsFetchContext, PostBasic } from './shared';
+import produce from 'immer';
 
 const initialState: State = {
     data: postBasicList
@@ -10,24 +11,33 @@ const initialState: State = {
 type RootAction = ActionType<typeof import('./actions')>;
 
 export const reducer = createReducer<State, RootAction>(initialState)
-    .handleAction(a.onFetchingPostDetails, (state, action) => {
-        const currentlySelectedPostDetailsIndex = state.data.findIndex(p => p.type === 'PostDetails');
+    .handleAction(a.onFetchingPostDetails, (s, action) => produce(s, state => {        
+        const currentlySelectedPostDetailsIndex = state.data.findIndex(p => p.type === 'PostDetailsFetchContext');
         if(currentlySelectedPostDetailsIndex > -1){
-            const postListCopy = state.data.map(p => p)
-            const currentlySelectedPostDetails = state.data[currentlySelectedPostDetailsIndex]
-            postListCopy[currentlySelectedPostDetailsIndex] = {
-                ...currentlySelectedPostDetails,
-                type: 'PostBasic'
-            }
-            return { data: postListCopy }
+            const currentlySelectedPostDetails = state.data[currentlySelectedPostDetailsIndex] as PostDetailsFetchContext
+            state.data[currentlySelectedPostDetailsIndex] = currentlySelectedPostDetails.basic
         }
-        else
-            return state;
-    })
-    .handleAction(a.onFetchedPostDetails, (state, action) => {
-        const nextSelectedDetails = action.payload        
-        const postListCopy = state.data.map(p => p)        
-        const indexOfNextSelected = state.data.findIndex(p => p.id === nextSelectedDetails.id)        
-        postListCopy[indexOfNextSelected] = nextSelectedDetails
-        return {data: postListCopy}
-    })
+        const postId = action.payload
+        const selectedPostIndex = state.data.findIndex(p => p.type === 'PostBasic' && p.id == postId)
+        state.data[selectedPostIndex] = {
+            type: 'PostDetailsFetchContext',
+            basic: state.data[selectedPostIndex] as PostBasic,
+            details: undefined,
+            status: 'fetching'
+        }
+    }))
+    .handleAction(a.onFetchedPostDetails, (s, action) => produce(s, state => {
+        const nextSelectedDetails = action.payload
+        const postDetailsFetchContext = state.data.find(p => 
+            p.type === 'PostDetailsFetchContext' && 
+            p.status === 'fetching' &&
+            p.basic.id === nextSelectedDetails.id
+        );
+        if(postDetailsFetchContext){
+            const casted = postDetailsFetchContext as PostDetailsFetchContext
+            casted.status = 'fetched'
+            casted.details = nextSelectedDetails
+        }
+        else 
+            throw new Error()
+    }))

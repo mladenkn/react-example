@@ -1,5 +1,3 @@
-import { PostBasic, PostDetails } from '../../data';
-
 export interface UserBasic {
     id: number
     name: string
@@ -27,6 +25,15 @@ export interface PostDetailsComment {
     body: string
 }
 
-export interface State {
-    data: (PostBasic | PostDetails)[]
+export interface PostDetailsFetchContext {
+    type: 'PostDetailsFetchContext'
+    basic: PostBasic
+    details?: PostDetails
+    status: 'fetched' | 'fetching'
 }
+
+export interface State {
+    data: (PostBasic | PostDetailsFetchContext)[]
+}
+
+export type PostList = (PostBasic | PostDetails)[]

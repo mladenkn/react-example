@@ -7,13 +7,14 @@ import { PostBasic, PostDetails } from '../data';
 import { connect } from 'react-redux';
 import { AppState } from '../logic/store';
 import { onPostBasicClick } from '../logic/postList';
+import { PostList as PostListData } from '../logic/postList';
  
 const useStyles = makeStyles({
 });
 
 interface Props {
   className?: string, 
-  posts: (PostBasic | PostDetails)[]
+  posts: PostListData
   onPostBasicClick: (id: number) => void
 }
 
