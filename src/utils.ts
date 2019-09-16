@@ -20,3 +20,12 @@ export interface Fetchable<TWrapped> {
     data?: TWrapped
     status: AsyncOperationStatus
 }
+
+export function getRandomInt(min: number, max: number){
+    return Math.floor(Math.random() * max) + min
+}
+
+export function getRandomArrayElement<T>(arr: T[]){
+    const i = getRandomInt(0, arr.length)
+    return arr[i]
+}
