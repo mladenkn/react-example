@@ -1,6 +1,5 @@
 import { takeEvery, put, call } from "@redux-saga/core/effects";
 import * as a from "./actions";
-import { actionTypes } from "./actions";
 import { PostDetails } from "./types";
 import { fetchPostDetails, fetchPostBasicList } from "./dataProviders";
  
@@ -17,6 +16,6 @@ function* fetchPostList(){
 }
 
 export default function*(){
-    yield takeEvery(actionTypes.onPostBasicClick, onPostBasicClick)
-    yield takeEvery(actionTypes.fetchPostList, fetchPostList)
+    yield takeEvery(a.fetchPostList, fetchPostList)
+    yield takeEvery(a.onPostBasicClick, onPostBasicClick)
 }

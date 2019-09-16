@@ -1,24 +1,15 @@
 import { createAction } from "typesafe-actions";
 import { PostBasic, PostDetails } from "./types";
 
-export const actionTypes = {
-    onPostBasicClick: 'postList/onPostBasicClick',
-    onFetchingPostDetails: 'postList/onFetchingPostDetails',
-    setSelectedPost: 'postList/setSelectedPost',
-    fetchPostList: 'postList/fetchPostList',
-    fetchPostListSuccess: 'postList/fetchPostListSucces',
-}
-
-export const onPostBasicClick = createAction(actionTypes.onPostBasicClick, p => (id: number) => p(id));
+export const onPostBasicClick = createAction('postList/onPostBasicClick', p => (id: number) => p(id));
 
 
-
-export const onFetchingPostDetails = createAction(actionTypes.onFetchingPostDetails, 
+export const onFetchingPostDetails = createAction('postList/onFetchingPostDetails', 
     p => (postId: number) => p(postId));
-export const onFetchedPostDetails = createAction(actionTypes.setSelectedPost, 
+export const onFetchedPostDetails = createAction('postList/setSelectedPost', 
     p => (nextSelectedDetails: PostDetails) => p(nextSelectedDetails)
 );
 
-export const fetchPostList = createAction(actionTypes.fetchPostList)
-export const fetchPostListSuccess = createAction(actionTypes.fetchPostListSuccess, 
+export const fetchPostList = createAction('postList/fetchPostList')
+export const fetchPostListSuccess = createAction('postList/fetchPostListSucces', 
     p => (postList: PostBasic[]) => p(postList))
