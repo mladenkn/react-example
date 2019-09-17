@@ -1,4 +1,5 @@
-import { PostListState, PostListViewData, PostDetailsFetchContext } from "./types";
+import { PostListState, PostListViewData, PostDetailsFetchContext, UserDetails, UserBasic } from "./types";
+import { AsyncOperationStatus } from "../../utils";
 
 export function selectPostListViewData(state: PostListState): PostListViewData {
     if(state.lastListFetch.data){
@@ -23,4 +24,26 @@ export function selectUserDetailsForUser(state: PostListState, userId: number){
     const userDetails = state.lastUserDetailsFetch;
     const fetchingOrFetchedUser = userId === userDetails.userId && userDetails.userId;
     return fetchingOrFetchedUser ? userDetails : undefined;
+}
+
+type UsernameDisplayVariant = 'justUsername' | 'loadingDetails' | 'withDetails' | 'usernameAndDetailsFetchError'
+
+export function selectUserDetailsDisplayContext(state: PostListState, user: UserBasic):
+  {variant: UsernameDisplayVariant, user: UserBasic | UserDetails}{
+  const { lastUserDetailsFetch } = state;
+
+  if((lastUserDetailsFetch.status === AsyncOperationStatus.NotInitiated) || lastUserDetailsFetch.userId !== user.id){
+    return { variant: 'justUsername', user };
+  }
+  else if(lastUserDetailsFetch.status === AsyncOperationStatus.Processing){
+    return { variant: 'loadingDetails', user };
+  }
+  else if((lastUserDetailsFetch.status === AsyncOperationStatus.Completed)){
+    return { variant: 'withDetails', user: lastUserDetailsFetch.data! };
+  }
+  else if(lastUserDetailsFetch.status === AsyncOperationStatus.Errored){
+    return { variant: 'usernameAndDetailsFetchError', user };
+  }
+  else
+    throw new Error()
 }

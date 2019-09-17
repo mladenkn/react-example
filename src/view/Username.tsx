@@ -1,62 +1,30 @@
-import React, { createContext, useContext } from 'react';
-import { makeStyles, Link, ButtonBase, Card } from "@material-ui/core";
+import React, { Fragment } from 'react';
+import { makeStyles, Link, ButtonBase, Card, Popover } from "@material-ui/core";
 import { AppState } from '../logic/store';
 import { connect } from 'react-redux';
 import { UserDetails, UserBasic } from '../logic/postList/types';
 import { onUsernameClick } from '../logic/postList/actions';
-import { Dispatch } from 'redux';
-import { AsyncOperationStatus } from '../utils';
-
-const useStyles = makeStyles({
-  root: {
-
-  },
-})
+import { selectUserDetailsDisplayContext } from '../logic/postList/selectors';
 
 type Props = {
   className?: string  
   showDetailsOnClick?: boolean
   user: UserBasic
   appState: AppState
-  dispatch: Dispatch
+  onUsernameClick: (userId: number) => void
 }
 
 export const Username = connect(
   (appState: AppState) => ({appState}),
-  (dispatch) => ({dispatch})
+  { onUsernameClick }
 )(UsernameContainer)
 
 function UsernameContainer(p: Props){
   function onClick(){
-    if(p.showDetailsOnClick){
-      p.dispatch(onUsernameClick(p.user.id))
-    }
+    p.showDetailsOnClick && p.onUsernameClick(p.user.id)
   }
-  const { lastUserDetailsFetch }  = p.appState.postList;
-  
-  let user: UserBasic | UserDetails
-  let variant: any
-
-  if((lastUserDetailsFetch.status === AsyncOperationStatus.NotInitiated) || lastUserDetailsFetch.userId !== p.user.id){
-    variant = 'justUsername';
-    user = p.user;
-  }
-  else if(lastUserDetailsFetch.status === AsyncOperationStatus.Processing){
-    variant = 'loadingDetails';
-    user = p.user;
-  }
-  else if((lastUserDetailsFetch.status === AsyncOperationStatus.Completed)){
-    variant = 'withDetails';
-    user = lastUserDetailsFetch.data!;
-  }
-  else if(lastUserDetailsFetch.status === AsyncOperationStatus.Errored){
-    variant = 'detailsFetchError';
-    user = p.user;
-  }
-  else
-    throw new Error()
-
-  return <UsernamePresenter user={user} variant={variant} onClick={onClick} className={p.className}  />
+  const { variant, user } = selectUserDetailsDisplayContext(p.appState.postList, p.user)
+  return <UsernamePresenter user={user} variant={variant as any} onClick={onClick} className={p.className}  />
 }
 
 type PresenterAllwaysProps = {
@@ -64,17 +32,16 @@ type PresenterAllwaysProps = {
   className?: string  
 }
 
-type PresenterProps = PresenterAllwaysProps & ({
-  variant: 'justUsername' | 'loadingDetails',
-  user: UserBasic
-} |
-{
-  variant: 'withDetails',
-  user: UserDetails
-} |
-{
-  variant: 'detailsFetchError',
-  user: UserDetails
+type PresenterProps = PresenterAllwaysProps & (
+  { variant: 'justUsername' | 'loadingDetails', user: UserBasic } |
+  { variant: 'withDetails', user: UserDetails } |
+  { variant: 'usernameAndDetailsFetchError', user: UserDetails }
+)
+
+const useStyles = makeStyles({
+  root: {
+
+  },
 })
  
 function UsernamePresenter(p: PresenterProps){
@@ -90,17 +57,35 @@ function UsernamePresenter(p: PresenterProps){
       )
     case 'loadingDetails':
       return (
-        <Link onClick={p.onClick} className={p.className} component={ButtonBase}>
-          {p.user.name} loading details
-        </Link>
+        <Fragment>
+          <Link aria-describedBy={'details-popover'} onClick={p.onClick} className={p.className} component={ButtonBase}>
+            {p.user.name} loading details
+          </Link>
+          <Popover 
+            id='details-popover'
+            open={true}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+          >
+            Loading {p.user.name} details
+          </Popover>
+        </Fragment>
       )
     case 'withDetails':
       return (
-        <Link onClick={p.onClick} className={p.className} component={ButtonBase}>
-          {p.user.name} {p.user.email} details
-        </Link>
+        <Fragment>
+          <Link onClick={p.onClick} className={p.className} component={ButtonBase}>
+            {p.user.name} {p.user.email} details
+          </Link>
+        </Fragment>
       )
-    case 'detailsFetchError':
+    case 'usernameAndDetailsFetchError':
       return (
         <Link onClick={p.onClick} className={p.className} component={ButtonBase}>
           {p.user.name} fetch error
