@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { makeStyles, Link, ButtonBase, Card, Popover } from "@material-ui/core";
 import { AppState } from '../logic/store';
 import { connect } from 'react-redux';
@@ -13,25 +13,21 @@ type Props = {
   id: string
 }
 
-export const Username = 
-//connect(() => ({id: Math.random().toString(36)}))
-(connect(
+export const Username = connect(
   (appState: AppState, p: Props) => {
-    console.log(p.id)
     const { variant, user } = selectUserDetailsDisplayContext(appState.postList, p.user, p.id)
     return { variant: variant as any, user };
   },
   (dispatch, p: Props) => {
-    console.log(p.id)
     return ({
       onClick: () => dispatch(fetchUserActions.request({ clientId: p.id, userId: p.user.id }))
     });
   }
-)(UsernamePresenter));
+)(UsernamePresenter);
 
 type PresenterAllwaysProps = {
   onClick: () => void
-  className?: string  
+  className?: string
 }
 
 type PresenterProps = PresenterAllwaysProps & (
@@ -39,62 +35,47 @@ type PresenterProps = PresenterAllwaysProps & (
   { variant: 'withDetails', user: UserDetails } |
   { variant: 'usernameAndDetailsFetchError', user: UserDetails }
 )
-
-const useStyles = makeStyles({
-  root: {
-
-  },
-})
  
 function UsernamePresenter(p: PresenterProps){
-  const classes = useStyles();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isClosedByUser, setIsClosedByUser] = useState(false);
 
-  switch(p.variant){
-
-    case 'justUsername':
-      return (
-        <Link onClick={p.onClick} className={p.className} component={ButtonBase}>
-          {p.user.name}
-        </Link>
-      )
-    case 'loadingDetails':
-      return (
-        <UsernameWithPopover name={p.user.name}>
-          <div>User details loading</div>
-        </UsernameWithPopover>
-      )
-    case 'withDetails':
-      return (
-        <UsernameWithPopover name={p.user.name}>
-          <div>User details</div>
-        </UsernameWithPopover>
-      )
-    case 'usernameAndDetailsFetchError':
-      return (
-        <Link onClick={p.onClick} className={p.className} component={ButtonBase}>
-          {p.user.name} fetch error
-        </Link>
-      )
-    
-    default:
-      throw new Error();
+  function getPopoverContent(){
+    switch(p.variant){
+      case 'justUsername':
+        return <Fragment />;
+      case 'loadingDetails':
+        return <UserDetailsLoading user={p.user} />;
+      case 'withDetails':
+        return <UserDetailsUI user={p.user} />;
+      case 'usernameAndDetailsFetchError':
+        return <div>{p.user.name} fetch error</div>;
+      default:
+        throw new Error();
+    }
   }
-}
 
-function UsernameWithPopover(p: {className?: string, name: string, children: JSX.Element}){
-
-  const link = (
-    <Link aria-describedby={'details-popover'} className={p.className} component={ButtonBase}>
-      {p.name}
-    </Link>
-  );
+  function handleClick(event: any) {
+    p.onClick();
+    setIsClosedByUser(false);
+    setAnchorEl(event.currentTarget);
+  }
 
   return (
     <Fragment>
-      {link}
+      <Link 
+        onClick={handleClick} 
+        aria-describedby='details-popover' 
+        className={p.className} 
+        component={ButtonBase}
+      >
+        {p.user.name}
+      </Link>
       <Popover 
         id='details-popover'
-        open={true}
+        onClose={() => setIsClosedByUser(true)}
+        open={isClosedByUser ? false : p.variant !== 'justUsername'}
+        anchorEl={anchorEl}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',
@@ -104,10 +85,10 @@ function UsernameWithPopover(p: {className?: string, name: string, children: JSX
           horizontal: 'left',
         }}
       >
-        {p.children}
+        {getPopoverContent()}
       </Popover>
     </Fragment>
-  )
+  );  
 }
 
 const useUserDetailsLoadingStyles = makeStyles({
