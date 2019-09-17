@@ -1,7 +1,6 @@
 import { PostListState, PostListViewData, PostDetailsFetchContext } from "./types";
 
 export function selectPostListViewData(state: PostListState): PostListViewData {
-    console.log('tu sam')
     if(state.lastListFetch.data){
         const list = state.lastListFetch.data!.map(p => {
             if(p.id !== state.selectedPostId)
@@ -9,11 +8,11 @@ export function selectPostListViewData(state: PostListState): PostListViewData {
             else
                 return {
                     type: 'PostDetailsFetchContext',
-                     basic: p,
-                     ...state.lastDetailsFetch,
+                    basic: p,
+                    status: state.lastDetailsFetch.status,
+                    details: state.lastDetailsFetch.data
                 } as PostDetailsFetchContext
         })
-        console.log(list)
         return { data: list, status: state.lastListFetch.status }    
     }
     else 

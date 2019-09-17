@@ -4,9 +4,9 @@ import { PostBasic, PostDetails } from "./types";
 export const onPostBasicClick = createAction('postList/onPostBasicClick', p => (id: number) => p(id));
 
 
-export const onFetchPostDetails = createAction('postList/onFetchingPostDetails', 
+export const onFetchPostDetails = createAction('postList/onFetchPostDetails', 
     p => (postId: number) => p(postId));
-export const onFetchPostDetailsSuccess = createAction('postList/setSelectedPost', 
+export const onFetchPostDetailsSuccess = createAction('postList/onFetchPostDetailsSuccess', 
     p => (nextSelectedDetails: PostDetails) => p(nextSelectedDetails)
 );
 

@@ -12,58 +12,20 @@ import { PostDetailsLoadingCard } from './PostDetailsLoadingCard';
 import { PostDetailsFetchContext } from '../logic/postList/types';
 import { AsyncOperationStatus } from '../utils';
 import { selectPostListViewData } from '../logic/postList';
- 
-const useStyles = makeStyles({
 
-});
+export const PostList = connect(
+  (state: AppState) => ({ postList: selectPostListViewData(state.postList) }),
+  { onPostBasicClick, fetchPostList }
+)(PostListPresenter)
 
-interface ContainerProps {
+interface Props {
   className?: string, 
-  posts: PostListViewData, 
+  postList: PostListViewData
   onPostBasicClick: (id: number) => void
   fetchPostList: () => void
 }
 
-export const PostList = 
-  connect((state: AppState) => ({posts: selectPostListViewData(state.postList)}), {onPostBasicClick, fetchPostList})
-  ((p: ContainerProps) => {
-    useEffect(() => {
-      p.fetchPostList()
-    }, [])
-
-    switch(p.posts.status){
-      case AsyncOperationStatus.Processing:
-        return <PostListLoading />  
-      case AsyncOperationStatus.NotInitiated:
-        return <PostListLoading />
-      case AsyncOperationStatus.Errored:
-        return <div>No connection</div>
-      case AsyncOperationStatus.Completed:
-        return (
-          <PostListPresenter 
-            className={p.className} 
-            data={p.posts.data!} 
-            onPostBasicClick={p.onPostBasicClick}
-          />
-        )
-      default:
-        return <div />
-    }
-  });
-
-// export const PostList = connect(
-//   (state: AppState) => ({ data: selectPostListViewData(state.postList) }),
-//   { onPostBasicClick }
-// )(PostListPresenter)
-
-interface Props {
-  className?: string, 
-  data: (PostBasic | PostDetailsFetchContext)[]
-  onPostBasicClick: (id: number) => void
-}
-
 export function PostListPresenter(p: Props){
-  const classes = useStyles()
 
   function renderPost(postContext: PostBasic | PostDetailsFetchContext){
     if(postContext.type === 'PostBasic')
@@ -88,27 +50,44 @@ export function PostListPresenter(p: Props){
     }
   }
 
-  return (
-    <List className={p.className}>
-      {p.data.map(renderPost)}
-    </List>
-  )
+  useEffect(() => {
+    p.fetchPostList()
+  }, [])
+
+  switch(p.postList.status){
+
+    case AsyncOperationStatus.Processing:
+      return <PostListLoading className={p.className} />  
+    
+    case AsyncOperationStatus.NotInitiated:
+      return <PostListLoading className={p.className} />
+    
+    case AsyncOperationStatus.Errored:
+      return <div className={p.className}>No network connection</div>
+    
+    case AsyncOperationStatus.Completed:
+      return (
+        <List className={p.className}>
+          {p.postList.data!.map(renderPost)}
+        </List>
+      )
+    
+    default:    
+      throw new Error('unpredicted case')
+  }
 }
 
 const usePostListLoadingStyles = makeStyles({
-  root: {
-    padding: '1em',
-  },
   spinner: {
     marginTop: '1em',
     marignLeft: '0.3em',
   },
 })
 
-export function PostListLoading(){
+export function PostListLoading(p: {className?: string}){
   const classes = usePostListLoadingStyles()
   return (
-    <div className={classes.root}>
+    <div className={p.className}>
       <Typography>Loading posts...</Typography>
       <CircularProgress className={classes.spinner} />
     </div>
