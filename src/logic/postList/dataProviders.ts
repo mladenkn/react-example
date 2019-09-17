@@ -54,6 +54,6 @@ export async function fetchPostBasicList(): Promise<PostBasic[]> {
 }
 
 export async function fetchUserDetails(id: number): Promise<UserDetails>{
-    const user = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`).then(r => r.json())
-    return { id: user.id, name: user.name }
+    const user = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`).then(r => r.json());
+    return user as UserDetails
 }

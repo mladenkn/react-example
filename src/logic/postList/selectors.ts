@@ -18,3 +18,9 @@ export function selectPostListViewData(state: PostListState): PostListViewData {
     else 
         return { data: undefined, status: state.lastListFetch.status }
 }
+
+export function selectUserDetailsForUser(state: PostListState, userId: number){
+    const userDetails = state.lastUserDetailsFetch;
+    const fetchingOrFetchedUser = userId === userDetails.userId && userDetails.userId;
+    return fetchingOrFetchedUser ? userDetails : undefined;
+}

@@ -1,9 +1,11 @@
 import React, { createContext, useContext } from 'react';
-import { makeStyles, Link, ButtonBase } from "@material-ui/core";
-import { FetchOf } from '../logic/fetchableState';
+import { makeStyles, Link, ButtonBase, Card } from "@material-ui/core";
 import { AppState } from '../logic/store';
 import { connect } from 'react-redux';
-import { UserDetails } from '../logic/postList/types';
+import { UserDetails, UserBasic } from '../logic/postList/types';
+import { onUsernameClick } from '../logic/postList/actions';
+import { Dispatch } from 'redux';
+import { AsyncOperationStatus } from '../utils';
 
 const useStyles = makeStyles({
   root: {
@@ -11,40 +13,127 @@ const useStyles = makeStyles({
   },
 })
 
-interface UsernameOwnProps {
-  className?: string
-  user: {
-    id: number
-    name: string
-  }
+type Props = {
+  className?: string  
+  showDetailsOnClick?: boolean
+  user: UserBasic
+  appState: AppState
+  dispatch: Dispatch
 }
-
-export interface UsernameProps extends UsernameOwnProps {
-  userDetails?: FetchOf<UserDetails>
-}
-
-interface ContextProps {  
-  onClick: (userId: number) => void
-}
-
-export const UsernameContext = createContext<ContextProps | undefined>(undefined)
 
 export const Username = connect(
-  (state: AppState, ownProps: UsernameOwnProps) => {
-    const userDetails = state.postList.lastUserDetailsFetch;
-    const fetchingOrFetchedUser = ownProps.user.id === userDetails.userId && userDetails.userId;
-    return fetchingOrFetchedUser ? {userDetails} : {};
+  (appState: AppState) => ({appState}),
+  (dispatch) => ({dispatch})
+)(UsernameContainer)
+
+function UsernameContainer(p: Props){
+  function onClick(){
+    if(p.showDetailsOnClick){
+      p.dispatch(onUsernameClick(p.user.id))
+    }
   }
-)(UsernamePresenter)
+  const { lastUserDetailsFetch }  = p.appState.postList;
+  
+  let user: UserBasic | UserDetails
+  let variant: any
+
+  if((lastUserDetailsFetch.status === AsyncOperationStatus.NotInitiated) || lastUserDetailsFetch.userId !== p.user.id){
+    variant = 'justUsername';
+    user = p.user;
+  }
+  else if(lastUserDetailsFetch.status === AsyncOperationStatus.Processing){
+    variant = 'loadingDetails';
+    user = p.user;
+  }
+  else if((lastUserDetailsFetch.status === AsyncOperationStatus.Completed)){
+    variant = 'withDetails';
+    user = lastUserDetailsFetch.data!;
+  }
+  else if(lastUserDetailsFetch.status === AsyncOperationStatus.Errored){
+    variant = 'detailsFetchError';
+    user = p.user;
+  }
+  else
+    throw new Error()
+
+  return <UsernamePresenter user={user} variant={variant} onClick={onClick} className={p.className}  />
+}
+
+type PresenterAllwaysProps = {
+  onClick: () => void
+  className?: string  
+}
+
+type PresenterProps = PresenterAllwaysProps & ({
+  variant: 'justUsername' | 'loadingDetails',
+  user: UserBasic
+} |
+{
+  variant: 'withDetails',
+  user: UserDetails
+} |
+{
+  variant: 'detailsFetchError',
+  user: UserDetails
+})
  
-export function UsernamePresenter(p: UsernameProps){
+function UsernamePresenter(p: PresenterProps){
   const classes = useStyles();
-  const context = useContext(UsernameContext);
-  console.log(p.userDetails, p.user.id);
-  const onClick = context && (() => context!.onClick(p.user.id));
+
+  switch(p.variant){
+
+    case 'justUsername':
+      return (
+        <Link onClick={p.onClick} className={p.className} component={ButtonBase}>
+          {p.user.name}
+        </Link>
+      )
+    case 'loadingDetails':
+      return (
+        <Link onClick={p.onClick} className={p.className} component={ButtonBase}>
+          {p.user.name} loading details
+        </Link>
+      )
+    case 'withDetails':
+      return (
+        <Link onClick={p.onClick} className={p.className} component={ButtonBase}>
+          {p.user.name} {p.user.email} details
+        </Link>
+      )
+    case 'detailsFetchError':
+      return (
+        <Link onClick={p.onClick} className={p.className} component={ButtonBase}>
+          {p.user.name} fetch error
+        </Link>
+      )
+    
+    default:
+      throw new Error();
+  }
+}
+
+const useUserDetailsLoadingStyles = makeStyles({
+
+})
+
+function UserDetailsLoading(p: {user: UserBasic}){
+  const classes = useUserDetailsLoadingStyles();
   return (
-    <Link onClick={onClick} className={p.className} component={ButtonBase}>
+    <div>
+      Loading {p.user.name}
+    </div>
+  )
+}
+
+const useUserDetailsStyles = makeStyles({
+
+})
+
+function UserDetailsUI(p: {user: UserDetails}){
+  const classes = useUserDetailsStyles();
+  return (
+    <div>
       {p.user.name}
-    </Link>
+    </div>
   )
 }

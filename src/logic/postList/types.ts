@@ -47,4 +47,11 @@ export type PostListViewData = FetchOf<(PostBasic | PostDetailsFetchContext)[]>
 export interface UserDetails {
     id: number
     name: string
+    email: string
+    phone: string
+    address: {
+        street: string
+        suite: string
+        city: string
+    }
 }
