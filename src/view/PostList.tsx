@@ -30,20 +30,20 @@ export function PostListPresenter(p: Props){
   function renderPost(postContext: PostBasic | PostDetailsFetchContext){
     if(postContext.type === 'PostBasic')
       return (
-        <ListItem key={postContext.id}>
+        <ListItem disableGutters key={postContext.id}>
           <PostCard clickable onClick={() => p.onPostBasicClick(postContext.id)} post={postContext} />
         </ListItem>
       )
     else {
       if(postContext.status === AsyncOperationStatus.Processing)
         return (
-          <ListItem key={postContext.basic.id}>
+          <ListItem disableGutters key={postContext.basic.id}>
             <PostDetailsLoadingCard post={postContext.basic} raised />
           </ListItem>
         )
       else
         return (
-          <ListItem key={postContext.basic.id}>
+          <ListItem disableGutters key={postContext.basic.id}>
             <PostDetailsCard post={postContext.details!} raised />
           </ListItem>
         )
@@ -67,7 +67,7 @@ export function PostListPresenter(p: Props){
     
     case AsyncOperationStatus.Completed:
       return (
-        <List className={p.className}>
+        <List disablePadding className={p.className}>
           {p.postList.data!.map(renderPost)}
         </List>
       )
