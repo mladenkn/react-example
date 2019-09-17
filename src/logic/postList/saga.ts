@@ -5,9 +5,9 @@ import { fetchPostDetails, fetchPostBasicList } from "./dataProviders";
  
 function* onPostBasicClick(action: ReturnType<typeof a.onPostBasicClick>){
     const postId = action.payload;            
-    yield put(a.onFetchingPostDetails(postId));
+    yield put(a.onFetchPostDetails(postId));
     const nextSelectedPostDetails: PostDetails = yield call(fetchPostDetails, postId)
-    yield put(a.onFetchedPostDetails(nextSelectedPostDetails))
+    yield put(a.onFetchPostDetailsSuccess(nextSelectedPostDetails))
 }
 
 function* fetchPostList(){

@@ -7,10 +7,11 @@ import { PostBasic } from '../logic/postList/types'
 import { connect } from 'react-redux';
 import { AppState } from '../logic/store';
 import { onPostBasicClick, fetchPostList } from '../logic/postList';
-import { PostList as PostListData } from '../logic/postList/types';
+import { PostListViewData } from '../logic/postList/types';
 import { PostDetailsLoadingCard } from './PostDetailsLoadingCard';
 import { PostDetailsFetchContext } from '../logic/postList/types';
 import { AsyncOperationStatus } from '../utils';
+import { selectPostListViewData } from '../logic/postList';
  
 const useStyles = makeStyles({
 
@@ -18,19 +19,19 @@ const useStyles = makeStyles({
 
 interface ContainerProps {
   className?: string, 
-  state: AppState, 
+  posts: PostListViewData, 
   onPostBasicClick: (id: number) => void
   fetchPostList: () => void
 }
 
 export const PostList = 
-  connect((state: AppState) => ({state}), {onPostBasicClick, fetchPostList})
+  connect((state: AppState) => ({posts: selectPostListViewData(state.postList)}), {onPostBasicClick, fetchPostList})
   ((p: ContainerProps) => {
     useEffect(() => {
       p.fetchPostList()
     }, [])
 
-    switch(p.state.postList.status){
+    switch(p.posts.status){
       case AsyncOperationStatus.Processing:
         return <PostListLoading />  
       case AsyncOperationStatus.NotInitiated:
@@ -41,7 +42,7 @@ export const PostList =
         return (
           <PostListPresenter 
             className={p.className} 
-            data={p.state.postList.data!} 
+            data={p.posts.data!} 
             onPostBasicClick={p.onPostBasicClick}
           />
         )
@@ -50,9 +51,14 @@ export const PostList =
     }
   });
 
+// export const PostList = connect(
+//   (state: AppState) => ({ data: selectPostListViewData(state.postList) }),
+//   { onPostBasicClick }
+// )(PostListPresenter)
+
 interface Props {
   className?: string, 
-  data: PostListData
+  data: (PostBasic | PostDetailsFetchContext)[]
   onPostBasicClick: (id: number) => void
 }
 

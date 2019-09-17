@@ -35,12 +35,10 @@ export interface PostDetailsFetchContext {
     status: AsyncOperationStatus
 }
 
-export type PostListState = FetchOf<PostList>
-
-export interface PostListState2 {
-    lastListFetch: FetchOf<PostList>
-    selectedPostId: number
+export interface PostListState {
+    lastListFetch: FetchOf<PostBasic[]>
+    selectedPostId?: number
     lastDetailsFetch: FetchOf<PostDetails>
 }
 
-export type PostList = (PostBasic | PostDetailsFetchContext)[]
+export type PostListViewData = FetchOf<(PostBasic | PostDetailsFetchContext)[]>

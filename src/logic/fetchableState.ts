@@ -39,7 +39,7 @@ export interface Fetchable<TWrapped> {
     status: AsyncOperationStatus
 }
 
-export function createFetchableDataStateFactory<TData>(){ 
+export function createFetchableDataStateFactory(){ 
 
     function initial(){
         return { data: undefined, status: AsyncOperationStatus.NotInitiated }
@@ -49,7 +49,7 @@ export function createFetchableDataStateFactory<TData>(){
         return { data: undefined, status: AsyncOperationStatus.Processing }
     }
 
-    function onFetchComplete(data: TData){
+    function onFetchComplete<TData>(data: TData){
         return { data, status: AsyncOperationStatus.Completed }
     }
 
@@ -57,5 +57,5 @@ export function createFetchableDataStateFactory<TData>(){
         return { data: undefined, status: AsyncOperationStatus.Errored }
     }
 
-    return { initial, onFetchBegin, onFetchComplete, onFetchFailure }
+    return { initial, onBegin: onFetchBegin, onComplete: onFetchComplete, onFailure: onFetchFailure }
 }
