@@ -3,7 +3,7 @@ import * as a from "./actions";
 import { PostListState } from './types';
 import produce from 'immer';
 import { fetchStateFactory } from '../fetchableState';
-import { postListFetchActions, postDetailsetchActions } from './actions';
+import { postListFetchActions, postDetailsetchActions, fetchUserActionActions } from './actions';
 
 type RootAction = ActionType<typeof import('./actions')>;
 
@@ -11,6 +11,7 @@ export const postListInitialState: PostListState = {
     lastListFetch: fetchStateFactory.initial(),
     selectedPostId: undefined,
     lastDetailsFetch: fetchStateFactory.initial(),
+    lastUserDetailsFetch: fetchStateFactory.initial(),
 }
 
 export const postListReducer = createReducer<PostListState, RootAction>(postListInitialState)
@@ -37,3 +38,15 @@ export const postListReducer = createReducer<PostListState, RootAction>(postList
     .handleAction(postDetailsetchActions.failure, (s, action) => produce(s, state => {
         state.lastDetailsFetch = fetchStateFactory.onFailure();
     }))
+    
+    .handleAction(fetchUserActionActions.request, (s, action) => produce(s, state => {
+        console.log(action)
+        state.lastUserDetailsFetch = {...fetchStateFactory.onBegin(), userId: action.payload}
+    }))
+    .handleAction(fetchUserActionActions.success, (s, action) => produce(s, state => {
+        Object.assign(state.lastUserDetailsFetch, fetchStateFactory.onComplete(action.payload))
+    }))
+    .handleAction(fetchUserActionActions.failure, (s, action) => produce(s, state => {
+        Object.assign(state.lastUserDetailsFetch, fetchStateFactory.onFailure())
+    }))
+    ;

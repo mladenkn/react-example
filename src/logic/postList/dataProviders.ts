@@ -1,4 +1,4 @@
-import { PostDetails, PostBasic, UserBasic, PostDetailsComment } from "./types"
+import { PostDetails, PostBasic, UserBasic, PostDetailsComment, UserDetails } from "./types"
 import { getRandomArrayElement } from "../../utils"
 
 async function fetchUserBasic(p: {email?: string, id?: number}): Promise<UserBasic> {
@@ -51,4 +51,9 @@ export async function fetchPostBasicList(): Promise<PostBasic[]> {
         title: p.title,
         user: await fetchUserBasic({id: p.userId})
     })))
+}
+
+export async function fetchUserDetails(id: number): Promise<UserDetails>{
+    const user = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`).then(r => r.json())
+    return { id: user.id, name: user.name }
 }

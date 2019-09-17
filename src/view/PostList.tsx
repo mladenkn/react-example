@@ -14,7 +14,7 @@ import { selectPostListViewData } from '../logic/postList/selectors';
 import { onPostBasicSelect, postListFetchActions } from '../logic/postList/actions';
 
 export const PostList = connect(
-  (state: AppState) => ({ postList: selectPostListViewData(state.homeSection.posts) }),
+  (state: AppState) => ({ postList: selectPostListViewData(state.postList) }),
   { onPostBasicClick: onPostBasicSelect, fetchPostList: postListFetchActions.request }
 )(PostListPresenter)
 

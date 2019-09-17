@@ -1,8 +1,8 @@
 import React from 'react';
 import { PostList } from './PostList';
 import { UsernameContext } from './Username';
-import { onUsernameClick } from '../logic/homeSection';
 import { connect } from 'react-redux';
+import { onUsernameClick } from '../logic/postList/actions';
 
 interface Props {
   className?: string

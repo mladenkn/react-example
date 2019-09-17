@@ -1,10 +1,12 @@
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit'
 import { combineReducers } from 'redux'
 import createSagaMiddleware from '@redux-saga/core'
-import { homeSectionReducer, HomeSectionState, homeSectionSaga } from './homeSection';
+import { PostListState } from './postList/types';
+import { postListReducer } from './postList/reducer';
+import { postListSaga } from './postList/saga';
 
 export interface AppState {
-    homeSection: HomeSectionState
+    postList: PostListState
 }
 
 export function createStore(){
@@ -13,12 +15,12 @@ export function createStore(){
 
     const store =  configureStore({
         reducer: combineReducers<AppState>({
-            homeSection: homeSectionReducer
+            postList: postListReducer
         }),
         middleware: [...getDefaultMiddleware(), saga]
     })
 
-    saga.run(homeSectionSaga)
+    saga.run(postListSaga)
 
     return store;
 }

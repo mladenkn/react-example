@@ -1,5 +1,5 @@
 import { createAction, createAsyncAction } from "typesafe-actions";
-import { PostBasic, PostDetails } from "./types";
+import { PostBasic, PostDetails, UserDetails } from "./types";
 
 export const onPostBasicSelect = createAction('postList/ON_POST_BASIC_SELECT', p => (id: number) => p(id));
 
@@ -14,3 +14,12 @@ export const postDetailsetchActions = createAsyncAction(
     'postList/FETCH_POST_DETAILS_SUCCESS',
     'postList/FETCH_POST_DETAILS_FAILURE'
 )<number, PostDetails, undefined>();
+
+
+export const onUsernameClick = createAction('homeSection/USERNAME_CLICK', p => (id: number) => p(id))
+
+export const fetchUserActionActions = createAsyncAction(
+    'homeSection/FETCH_USER_REQUEST',
+    'homeSection/FETCH_USER_SUCCESS',
+    'homeSection/FETCH_USER_FAILURE',
+)<number, UserDetails, undefined>()
