@@ -18,12 +18,17 @@ export const reducer = createReducer<PostListState, RootAction>(initialState)
     .handleAction(a.onPostBasicClick, (s, action) => produce(s, state => {
         state.selectedPostId = action.payload
     })) 
+
     .handleAction(a.onFetchPostDetails, (s, action) => produce(s, state => {
         state.lastDetailsFetch = fetchStateFactory.onBegin()
     })) 
     .handleAction(a.onFetchPostDetailsSuccess, (s, action) => produce(s, state => {
         state.lastDetailsFetch = fetchStateFactory.onComplete(action.payload)
     }))
+    .handleAction(a.onFetchPostDetailsFailure, (s, action) => produce(s, state => {
+        state.lastDetailsFetch = fetchStateFactory.onFailure()
+    }))
+    
     .handleAction(a.fetchPostListSuccess, (s, action) => produce(s, state => {
         state.lastListFetch = fetchStateFactory.onComplete(action.payload)
     }))

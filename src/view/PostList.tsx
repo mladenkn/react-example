@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { List, ListItem, CircularProgress, Typography } from '@material-ui/core';
+import React, { useEffect, Fragment, useState } from 'react';
+import { List, ListItem, CircularProgress, Typography, Dialog, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { PostCard } from './PostCard';
 import { PostDetailsCard } from './PostDetailsCard';
@@ -41,6 +41,16 @@ export function PostListPresenter(p: Props){
             <PostDetailsLoadingCard post={postContext.basic} raised />
           </ListItem>
         )
+      if(postContext.status === AsyncOperationStatus.Errored){
+        return (
+          <Fragment>
+            <PostFetchErrorDialog />
+            <ListItem disableGutters key={postContext.basic.id}>
+              <PostCard clickable onClick={() => p.onPostBasicClick(postContext.basic.id)} post={postContext.basic} />
+            </ListItem>
+          </Fragment>
+        )
+      }
       else
         return (
           <ListItem disableGutters key={postContext.basic.id}>
@@ -91,5 +101,30 @@ export function PostListLoading(p: {className?: string}){
       <Typography>Loading posts...</Typography>
       <CircularProgress className={classes.spinner} />
     </div>
+  )
+}
+
+const useDetailsFetchErrorDialogStyles = makeStyles({
+  root: {
+    padding: '0.6em 0.7em 0.2em',
+  },
+  text: {
+    marginBottom: '0.2em',
+  },
+  button: {
+    float: 'right'
+  },
+})
+
+export function PostFetchErrorDialog() {
+  const classes = useDetailsFetchErrorDialogStyles();
+  const [isOpen, setIsOpen] = useState(true);
+  return (
+    <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
+      <div className={classes.root}>                
+        <Typography onClick={() => setIsOpen(false)}>Error fetching post details.</Typography>
+        <Button className={classes.button} color='primary'>Ok</Button>
+      </div>
+    </Dialog>
   )
 }
