@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
   postList: {
-    padding: '0.6em 2em',
+    padding: '0.6em 1em',
     width: '35em',
   }
 });
