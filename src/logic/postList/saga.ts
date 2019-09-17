@@ -30,7 +30,7 @@ function* fetchPostList(){
     yield put(postListFetchActions.success(posts!));
 }
 
-export default function*(){
+export function* postListSaga(){
     yield takeEvery(postListFetchActions.request, fetchPostList)
     yield takeEvery(a.onPostBasicSelect, onPostBasicClick)
 }

@@ -1,10 +1,8 @@
 import React from 'react';
 import { PostList } from './PostList';
 import { UsernameContext } from './Username';
-import { onUsernameClick, UserDetails } from '../logic/homeSection';
+import { onUsernameClick } from '../logic/homeSection';
 import { connect } from 'react-redux';
-import { AppState } from '../logic/store';
-import { FetchOf } from '../logic/fetchableState';
 
 interface Props {
   className?: string

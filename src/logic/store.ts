@@ -1,5 +1,4 @@
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit'
-import { postListSaga } from './postList'
 import { combineReducers } from 'redux'
 import createSagaMiddleware from '@redux-saga/core'
 import { homeSectionReducer, HomeSectionState, homeSectionSaga } from './homeSection';

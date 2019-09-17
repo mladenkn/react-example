@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from "@material-ui/styles"
-import { Card, Typography, CircularProgress } from "@material-ui/core"
+import { CircularProgress } from "@material-ui/core"
 import { PostBasic } from '../logic/postList/types'
 import { PostCard } from './PostCard'
 

@@ -6,16 +6,16 @@ import { PostDetailsCard } from './PostDetailsCard';
 import { PostBasic } from '../logic/postList/types'
 import { connect } from 'react-redux';
 import { AppState } from '../logic/store';
-import { onPostBasicClick, postListFetchActions } from '../logic/postList';
 import { PostListViewData } from '../logic/postList/types';
 import { PostDetailsLoadingCard } from './PostDetailsLoadingCard';
 import { PostDetailsFetchContext } from '../logic/postList/types';
 import { AsyncOperationStatus } from '../utils';
-import { selectPostListViewData } from '../logic/postList';
+import { selectPostListViewData } from '../logic/postList/selectors';
+import { onPostBasicSelect, postListFetchActions } from '../logic/postList/actions';
 
 export const PostList = connect(
   (state: AppState) => ({ postList: selectPostListViewData(state.homeSection.posts) }),
-  { onPostBasicClick, fetchPostList: postListFetchActions.request }
+  { onPostBasicClick: onPostBasicSelect, fetchPostList: postListFetchActions.request }
 )(PostListPresenter)
 
 interface Props {

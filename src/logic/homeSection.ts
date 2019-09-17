@@ -1,9 +1,10 @@
 import { PostListState } from "./postList/types";
 import { createAsyncAction, createReducer, createAction, getType } from "typesafe-actions";
-import { postListInitialState, postListActions as postListActions_, postListReducer, postListSaga } from "./postList";
 import { FetchOf, fetchStateFactory } from "./fetchableState";
 import produce from "immer";
 import { takeEvery, call, put, fork } from "@redux-saga/core/effects";
+import { postListInitialState, postListReducer } from "./postList/reducer";
+import { postListSaga } from "./postList/saga";
 
 export interface UserDetails {
     id: number

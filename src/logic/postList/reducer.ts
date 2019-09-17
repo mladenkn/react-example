@@ -7,13 +7,13 @@ import { postListFetchActions, postDetailsetchActions } from './actions';
 
 type RootAction = ActionType<typeof import('./actions')>;
 
-export const initialState: PostListState = {
+export const postListInitialState: PostListState = {
     lastListFetch: fetchStateFactory.initial(),
     selectedPostId: undefined,
     lastDetailsFetch: fetchStateFactory.initial(),
 }
 
-export const reducer = createReducer<PostListState, RootAction>(initialState)
+export const postListReducer = createReducer<PostListState, RootAction>(postListInitialState)
     .handleAction(a.onPostBasicSelect, (s, action) => produce(s, state => {
         state.selectedPostId = action.payload;
     })) 
