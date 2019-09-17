@@ -2,7 +2,7 @@ import { configureStore, getDefaultMiddleware } from 'redux-starter-kit'
 import { postListSaga } from './postList'
 import { combineReducers } from 'redux'
 import createSagaMiddleware from '@redux-saga/core'
-import { homeSectionReducer, HomeSectionState } from './homeSection';
+import { homeSectionReducer, HomeSectionState, homeSectionSaga } from './homeSection';
 
 export interface AppState {
     homeSection: HomeSectionState
@@ -19,7 +19,7 @@ export function createStore(){
         middleware: [...getDefaultMiddleware(), saga]
     })
 
-    saga.run(postListSaga)
+    saga.run(homeSectionSaga)
 
     return store;
 }
