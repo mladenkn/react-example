@@ -3,7 +3,7 @@ import * as a from "./actions";
 import { PostListState } from './types';
 import produce from 'immer';
 import { fetchStateFactory } from '../fetchableState';
-import { postListFetchActions, postDetailsetchActions, fetchUserActionActions } from './actions';
+import { postListFetchActions, postDetailsetchActions, fetchUserActions } from './actions';
 
 type RootAction = ActionType<typeof import('./actions')>;
 
@@ -39,14 +39,14 @@ export const postListReducer = createReducer<PostListState, RootAction>(postList
         state.lastDetailsFetch = fetchStateFactory.onFailure();
     }))
     
-    .handleAction(fetchUserActionActions.request, (s, action) => produce(s, state => {
+    .handleAction(fetchUserActions.request, (s, action) => produce(s, state => {
         console.log(action)
-        state.lastUserDetailsFetch = {...fetchStateFactory.onBegin(), userId: action.payload}
+        state.lastUserDetailsFetch = {...fetchStateFactory.onBegin(), clientId: action.payload.clientId}
     }))
-    .handleAction(fetchUserActionActions.success, (s, action) => produce(s, state => {
+    .handleAction(fetchUserActions.success, (s, action) => produce(s, state => {
         Object.assign(state.lastUserDetailsFetch, fetchStateFactory.onComplete(action.payload))
     }))
-    .handleAction(fetchUserActionActions.failure, (s, action) => produce(s, state => {
+    .handleAction(fetchUserActions.failure, (s, action) => produce(s, state => {
         Object.assign(state.lastUserDetailsFetch, fetchStateFactory.onFailure())
     }))
     ;

@@ -3,29 +3,30 @@ import { makeStyles, Link, ButtonBase, Card, Popover } from "@material-ui/core";
 import { AppState } from '../logic/store';
 import { connect } from 'react-redux';
 import { UserDetails, UserBasic } from '../logic/postList/types';
-import { onUsernameClick } from '../logic/postList/actions';
+import { fetchUserActions } from '../logic/postList/actions';
 import { selectUserDetailsDisplayContext } from '../logic/postList/selectors';
 
 type Props = {
   className?: string  
-  showDetailsOnClick?: boolean
   user: UserBasic
-  appState: AppState
-  onUsernameClick: (userId: number) => void
+  id: string
 }
 
-export const Username = connect(
-  (appState: AppState) => ({appState}),
-  { onUsernameClick }
-)(UsernameContainer)
-
-function UsernameContainer(p: Props){
-  function onClick(){
-    p.showDetailsOnClick && p.onUsernameClick(p.user.id)
+export const Username = 
+//connect(() => ({id: Math.random().toString(36)}))
+(connect(
+  (appState: AppState, p: Props) => {
+    console.log(p.id)
+    const { variant, user } = selectUserDetailsDisplayContext(appState.postList, p.user, p.id)
+    return { variant: variant as any, user };
+  },
+  (dispatch, p: Props & {showDetailsOnClick?: boolean}) => {
+    console.log(p.id)
+    return ({
+      onClick: () => p.showDetailsOnClick && dispatch(fetchUserActions.request({ clientId: p.id, userId: p.user.id }))
+    });
   }
-  const { variant, user } = selectUserDetailsDisplayContext(p.appState.postList, p.user)
-  return <UsernamePresenter user={user} variant={variant as any} onClick={onClick} className={p.className}  />
-}
+)(UsernamePresenter));
 
 type PresenterAllwaysProps = {
   onClick: () => void
@@ -58,7 +59,7 @@ function UsernamePresenter(p: PresenterProps){
     case 'loadingDetails':
       return (
         <Fragment>
-          <Link aria-describedBy={'details-popover'} onClick={p.onClick} className={p.className} component={ButtonBase}>
+          <Link aria-describedby={'details-popover'} onClick={p.onClick} className={p.className} component={ButtonBase}>
             {p.user.name} loading details
           </Link>
           <Popover 

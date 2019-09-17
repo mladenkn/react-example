@@ -39,7 +39,7 @@ export interface PostListState {
     lastListFetch: FetchOf<PostBasic[]>
     selectedPostId?: number
     lastDetailsFetch: FetchOf<PostDetails>
-    lastUserDetailsFetch: FetchOf<UserDetails> & { userId?: number }
+    lastUserDetailsFetch: FetchOf<UserDetails> & { clientId?: string }
 }
 
 export type PostListViewData = FetchOf<(PostBasic | PostDetailsFetchContext)[]>

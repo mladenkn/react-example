@@ -21,7 +21,7 @@ export function PostDetailsCard(p: {post: PostDetails, raised: boolean}){
   return (
     <PostCard post={p.post}>
       <Typography className={classes.body}>{p.post.body}</Typography>
-      <PostCommentList className={classes.commentList} comments={p.post.comments} />
+      <PostCommentList className={classes.commentList} postId={p.post.id} comments={p.post.comments} />
     </PostCard>
   )
 }
@@ -43,13 +43,13 @@ const usePostCommentListStyles = makeStyles({
   },
 })
 
-function PostCommentList(p: {className?: string, comments: PostDetailsComment[]}){
+function PostCommentList(p: {className?: string, postId: number, comments: PostDetailsComment[]}){
   const classes = usePostCommentListStyles()
   return (
     <List disablePadding className={p.className}>
       {p.comments.map(c => (
         <ListItem key={c.id} disableGutters className={classes.listItem}>
-          <Username showDetailsOnClick className={classes.username} user={c.user} />
+          <Username id={`${p.postId}.${c.id}`} showDetailsOnClick className={classes.username} user={c.user} />
           <Typography className={classes.body}>
             {c.body}
           </Typography>

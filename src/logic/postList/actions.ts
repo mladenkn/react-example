@@ -18,8 +18,8 @@ export const postDetailsetchActions = createAsyncAction(
 
 export const onUsernameClick = createAction('homeSection/USERNAME_CLICK', p => (id: number) => p(id))
 
-export const fetchUserActionActions = createAsyncAction(
+export const fetchUserActions = createAsyncAction(
     'homeSection/FETCH_USER_REQUEST',
     'homeSection/FETCH_USER_SUCCESS',
     'homeSection/FETCH_USER_FAILURE',
-)<number, UserDetails, undefined>()
+)<{clientId: string, userId: number}, UserDetails, undefined>();
