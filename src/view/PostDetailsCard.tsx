@@ -49,7 +49,7 @@ function PostCommentList(p: {className?: string, postId: number, comments: PostD
     <List disablePadding className={p.className}>
       {p.comments.map(c => (
         <ListItem key={c.id} disableGutters className={classes.listItem}>
-          <Username id={`${p.postId}.${c.id}`} showDetailsOnClick className={classes.username} user={c.user} />
+          <Username id={`${p.postId}.${c.id}`} className={classes.username} user={c.user} />
           <Typography className={classes.body}>
             {c.body}
           </Typography>

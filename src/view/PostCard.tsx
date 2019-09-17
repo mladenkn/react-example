@@ -32,7 +32,7 @@ export function PostCard(p: Props){
   const content = (
     <Fragment>
       <Typography className={classes.title}>{p.post.title}</Typography>
-      <Username id={p.post.id.toString()} showDetailsOnClick user={p.post.user} className={classes.username} />
+      <Username id={p.post.id.toString()} user={p.post.user} className={classes.username} />
       {p.children}
     </Fragment>
   );

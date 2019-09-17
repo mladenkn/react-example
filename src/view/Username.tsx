@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { UserDetails, UserBasic } from '../logic/postList/types';
 import { fetchUserActions } from '../logic/postList/actions';
 import { selectUserDetailsDisplayContext } from '../logic/postList/selectors';
+import { useRef } from 'react';
 
 type Props = {
   className?: string  
@@ -20,10 +21,10 @@ export const Username =
     const { variant, user } = selectUserDetailsDisplayContext(appState.postList, p.user, p.id)
     return { variant: variant as any, user };
   },
-  (dispatch, p: Props & {showDetailsOnClick?: boolean}) => {
+  (dispatch, p: Props) => {
     console.log(p.id)
     return ({
-      onClick: () => p.showDetailsOnClick && dispatch(fetchUserActions.request({ clientId: p.id, userId: p.user.id }))
+      onClick: () => dispatch(fetchUserActions.request({ clientId: p.id, userId: p.user.id }))
     });
   }
 )(UsernamePresenter));
@@ -58,33 +59,15 @@ function UsernamePresenter(p: PresenterProps){
       )
     case 'loadingDetails':
       return (
-        <Fragment>
-          <Link aria-describedby={'details-popover'} onClick={p.onClick} className={p.className} component={ButtonBase}>
-            {p.user.name} loading details
-          </Link>
-          <Popover 
-            id='details-popover'
-            open={true}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
-            }}
-          >
-            Loading {p.user.name} details
-          </Popover>
-        </Fragment>
+        <UsernameWithPopover name={p.user.name}>
+          <div>User details loading</div>
+        </UsernameWithPopover>
       )
     case 'withDetails':
       return (
-        <Fragment>
-          <Link onClick={p.onClick} className={p.className} component={ButtonBase}>
-            {p.user.name} {p.user.email} details
-          </Link>
-        </Fragment>
+        <UsernameWithPopover name={p.user.name}>
+          <div>User details</div>
+        </UsernameWithPopover>
       )
     case 'usernameAndDetailsFetchError':
       return (
@@ -96,6 +79,35 @@ function UsernamePresenter(p: PresenterProps){
     default:
       throw new Error();
   }
+}
+
+function UsernameWithPopover(p: {className?: string, name: string, children: JSX.Element}){
+
+  const link = (
+    <Link aria-describedby={'details-popover'} className={p.className} component={ButtonBase}>
+      {p.name}
+    </Link>
+  );
+
+  return (
+    <Fragment>
+      {link}
+      <Popover 
+        id='details-popover'
+        open={true}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        {p.children}
+      </Popover>
+    </Fragment>
+  )
 }
 
 const useUserDetailsLoadingStyles = makeStyles({
