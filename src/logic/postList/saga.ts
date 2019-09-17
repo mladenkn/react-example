@@ -4,21 +4,17 @@ import { PostDetails, PostBasic } from "./types";
 import { fetchPostDetails, fetchPostBasicList } from "./dataProviders";
 import { postDetailsetchActions as postDetailSFetchActions, postListFetchActions } from "./actions";
  
-function* onPostBasicClick(action: ReturnType<typeof a.onPostBasicClick>){
-    const postId = action.payload;
-    
-    yield put(postDetailSFetchActions.request(postId));
-    
-    let postDetails: PostDetails;
-    
+function* onPostBasicClick(action: ReturnType<typeof a.onPostBasicSelect>){
+    const postId = action.payload;    
+    yield put(postDetailSFetchActions.request(postId));    
+    let postDetails: PostDetails;    
     try {
         postDetails = yield call(fetchPostDetails, postId);
     }
     catch {
         yield put(postDetailSFetchActions.failure());
         return;
-    }
-    
+    }    
     yield put(postDetailSFetchActions.success(postDetails));
 }
 
@@ -36,5 +32,5 @@ function* fetchPostList(){
 
 export default function*(){
     yield takeEvery(postListFetchActions.request, fetchPostList)
-    yield takeEvery(a.onPostBasicClick, onPostBasicClick)
+    yield takeEvery(a.onPostBasicSelect, onPostBasicClick)
 }

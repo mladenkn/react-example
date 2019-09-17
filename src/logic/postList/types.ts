@@ -1,5 +1,5 @@
 import { AsyncOperationStatus } from "../../utils";
-import { Fetchable as FetchOf } from "../fetchableState";
+import { FetchOf } from "../fetchableState";
 
 export interface UserBasic {
     id: number

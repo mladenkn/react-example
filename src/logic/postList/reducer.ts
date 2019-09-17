@@ -2,21 +2,19 @@ import { ActionType, createReducer } from 'typesafe-actions';
 import * as a from "./actions";
 import { PostListState } from './types';
 import produce from 'immer';
-import { createFetchableDataStateFactory } from '../fetchableState';
+import { fetchStateFactory } from '../fetchableState';
 import { postListFetchActions, postDetailsetchActions } from './actions';
 
 type RootAction = ActionType<typeof import('./actions')>;
 
-const fetchStateFactory = createFetchableDataStateFactory();
-
-const initialState: PostListState = {
+export const initialState: PostListState = {
     lastListFetch: fetchStateFactory.initial(),
     selectedPostId: undefined,
     lastDetailsFetch: fetchStateFactory.initial(),
 }
 
 export const reducer = createReducer<PostListState, RootAction>(initialState)
-    .handleAction(a.onPostBasicClick, (s, action) => produce(s, state => {
+    .handleAction(a.onPostBasicSelect, (s, action) => produce(s, state => {
         state.selectedPostId = action.payload;
     })) 
     

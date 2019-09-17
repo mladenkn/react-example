@@ -15,7 +15,7 @@ export function createFetchableDataModule<TData>(){
         onFetchFailure: createAction(actionTypes.onFetchFailure, p => (id: number) => p(id)),
     }
 
-    const initialState: Fetchable<TData> = {
+    const initialState: FetchOf<TData> = {
         data: undefined,
         status: AsyncOperationStatus.NotInitiated
     }
@@ -34,12 +34,12 @@ export function createFetchableDataModule<TData>(){
     return { reducer, actions }
 }
 
-export interface Fetchable<TWrapped> {
+export interface FetchOf<TWrapped> {
     data?: TWrapped
     status: AsyncOperationStatus
 }
 
-export function createFetchableDataStateFactory(){ 
+function createFetchableDataStateFactory(){ 
 
     function initial(){
         return { data: undefined, status: AsyncOperationStatus.NotInitiated }
@@ -59,3 +59,5 @@ export function createFetchableDataStateFactory(){
 
     return { initial, onBegin: onFetchBegin, onComplete: onFetchComplete, onFailure: onFetchFailure }
 }
+
+export const fetchStateFactory = createFetchableDataStateFactory()

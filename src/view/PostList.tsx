@@ -14,7 +14,7 @@ import { AsyncOperationStatus } from '../utils';
 import { selectPostListViewData } from '../logic/postList';
 
 export const PostList = connect(
-  (state: AppState) => ({ postList: selectPostListViewData(state.postList) }),
+  (state: AppState) => ({ postList: selectPostListViewData(state.homeSection.posts) }),
   { onPostBasicClick, fetchPostList: postListFetchActions.request }
 )(PostListPresenter)
 
