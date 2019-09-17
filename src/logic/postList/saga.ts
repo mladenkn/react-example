@@ -2,11 +2,12 @@ import { takeEvery, put, call } from "@redux-saga/core/effects";
 import * as a from "./actions";
 import { PostDetails, PostBasic } from "./types";
 import { fetchPostDetails, fetchPostBasicList } from "./dataProviders";
+import { postDetailsetchActions as postDetailSFetchActions, postListFetchActions } from "./actions";
  
 function* onPostBasicClick(action: ReturnType<typeof a.onPostBasicClick>){
     const postId = action.payload;
     
-    yield put(a.onFetchPostDetails(postId));
+    yield put(postDetailSFetchActions.request(postId));
     
     let postDetails: PostDetails;
     
@@ -14,11 +15,11 @@ function* onPostBasicClick(action: ReturnType<typeof a.onPostBasicClick>){
         postDetails = yield call(fetchPostDetails, postId);
     }
     catch {
-        yield put(a.onFetchPostDetailsFailure());
+        yield put(postDetailSFetchActions.failure());
         return;
     }
     
-    yield put(a.onFetchPostDetailsSuccess(postDetails!));
+    yield put(postDetailSFetchActions.success(postDetails));
 }
 
 function* fetchPostList(){
@@ -27,13 +28,13 @@ function* fetchPostList(){
         posts = yield call(fetchPostBasicList);
     }
     catch {
-        yield put(a.fetchPostListFailure());
+        yield put(postListFetchActions.failure());
         return;
     }    
-    yield put(a.fetchPostListSuccess(posts!));
+    yield put(postListFetchActions.success(posts!));
 }
 
 export default function*(){
-    yield takeEvery(a.fetchPostList, fetchPostList)
+    yield takeEvery(postListFetchActions.request, fetchPostList)
     yield takeEvery(a.onPostBasicClick, onPostBasicClick)
 }

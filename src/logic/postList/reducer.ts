@@ -3,6 +3,7 @@ import * as a from "./actions";
 import { PostListState } from './types';
 import produce from 'immer';
 import { createFetchableDataStateFactory } from '../fetchableState';
+import { postListFetchActions, postDetailsetchActions } from './actions';
 
 type RootAction = ActionType<typeof import('./actions')>;
 
@@ -16,25 +17,25 @@ const initialState: PostListState = {
 
 export const reducer = createReducer<PostListState, RootAction>(initialState)
     .handleAction(a.onPostBasicClick, (s, action) => produce(s, state => {
-        state.selectedPostId = action.payload
+        state.selectedPostId = action.payload;
     })) 
-
-    .handleAction(a.onFetchPostDetails, (s, action) => produce(s, state => {
-        state.lastDetailsFetch = fetchStateFactory.onBegin()
-    })) 
-    .handleAction(a.onFetchPostDetailsSuccess, (s, action) => produce(s, state => {
-        state.lastDetailsFetch = fetchStateFactory.onComplete(action.payload)
+    
+    .handleAction(postListFetchActions.request, (s) => produce(s, state => {
+        state.lastListFetch = fetchStateFactory.onBegin();
     }))
-    .handleAction(a.onFetchPostDetailsFailure, (s, action) => produce(s, state => {
-        state.lastDetailsFetch = fetchStateFactory.onFailure()
+    .handleAction(postListFetchActions.success, (s, action) => produce(s, state => {
+        state.lastListFetch = fetchStateFactory.onComplete(action.payload);
+    }))
+    .handleAction(postListFetchActions.failure, (s, action) => produce(s, state => {
+        state.lastListFetch = fetchStateFactory.onFailure();
     }))
     
-    .handleAction(a.fetchPostListSuccess, (s, action) => produce(s, state => {
-        state.lastListFetch = fetchStateFactory.onComplete(action.payload)
+    .handleAction(postDetailsetchActions.request, (s, action) => produce(s, state => {
+        state.lastDetailsFetch = fetchStateFactory.onBegin();
+    })) 
+    .handleAction(postDetailsetchActions.success, (s, action) => produce(s, state => {
+        state.lastDetailsFetch = fetchStateFactory.onComplete(action.payload);
     }))
-    .handleAction(a.fetchPostListFailure, (s, action) => produce(s, state => {
-        state.lastListFetch = fetchStateFactory.onFailure()
-    }))
-    .handleAction(a.fetchPostList, (s) => produce(s, state => {
-        state.lastListFetch = fetchStateFactory.onBegin()
+    .handleAction(postDetailsetchActions.failure, (s, action) => produce(s, state => {
+        state.lastDetailsFetch = fetchStateFactory.onFailure();
     }))

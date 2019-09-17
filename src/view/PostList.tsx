@@ -6,7 +6,7 @@ import { PostDetailsCard } from './PostDetailsCard';
 import { PostBasic } from '../logic/postList/types'
 import { connect } from 'react-redux';
 import { AppState } from '../logic/store';
-import { onPostBasicClick, fetchPostList } from '../logic/postList';
+import { onPostBasicClick, postListFetchActions } from '../logic/postList';
 import { PostListViewData } from '../logic/postList/types';
 import { PostDetailsLoadingCard } from './PostDetailsLoadingCard';
 import { PostDetailsFetchContext } from '../logic/postList/types';
@@ -15,7 +15,7 @@ import { selectPostListViewData } from '../logic/postList';
 
 export const PostList = connect(
   (state: AppState) => ({ postList: selectPostListViewData(state.postList) }),
-  { onPostBasicClick, fetchPostList }
+  { onPostBasicClick, fetchPostList: postListFetchActions.request }
 )(PostListPresenter)
 
 interface Props {
