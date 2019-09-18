@@ -21,6 +21,7 @@ export const Username = connect(
     return { variant: variant as any, user, isClickable: p.canShowUserDetails || false };
   },
   (dispatch, p: UsernameProps) => ({
+    // it may be bette to fetch in component to avout clientId
     onClick: () => p.canShowUserDetails && dispatch(fetchUserActions.request({ clientId: p.id, userId: p.user.id }))
   })
 )(UsernamePresenter);

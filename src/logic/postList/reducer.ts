@@ -2,16 +2,16 @@ import { ActionType, createReducer } from 'typesafe-actions';
 import * as a from "./actions";
 import { PostListState } from './types';
 import produce from 'immer';
-import { fetchStateFactory } from '../fetchableState';
+import { fetchStates } from '../../utils';
 import { postListFetchActions, postDetailsetchActions, fetchUserActions } from './actions';
 
 type RootAction = ActionType<typeof import('./actions')>;
 
 export const postListInitialState: PostListState = {
-    lastListFetch: fetchStateFactory.initial(),
+    lastListFetch: fetchStates.initial,
     selectedPostId: undefined,
-    lastDetailsFetch: fetchStateFactory.initial(),
-    lastUserDetailsFetch: fetchStateFactory.initial(),
+    lastDetailsFetch: fetchStates.initial,
+    lastUserDetailsFetch: fetchStates.initial,
 }
 
 export const postListReducer = createReducer<PostListState, RootAction>(postListInitialState)
@@ -20,33 +20,34 @@ export const postListReducer = createReducer<PostListState, RootAction>(postList
     })) 
     
     .handleAction(postListFetchActions.request, (s) => produce(s, state => {
-        state.lastListFetch = fetchStateFactory.onBegin();
+        state.lastListFetch = fetchStates.begin;
     }))
     .handleAction(postListFetchActions.success, (s, action) => produce(s, state => {
-        state.lastListFetch = fetchStateFactory.onComplete(action.payload);
+        state.lastListFetch = fetchStates.complete(action.payload);
     }))
     .handleAction(postListFetchActions.failure, (s, action) => produce(s, state => {
-        state.lastListFetch = fetchStateFactory.onFailure();
+        state.lastListFetch = fetchStates.failure;
     }))
     
     .handleAction(postDetailsetchActions.request, (s, action) => produce(s, state => {
-        state.lastDetailsFetch = fetchStateFactory.onBegin();
+        state.lastDetailsFetch = fetchStates.begin;
     })) 
     .handleAction(postDetailsetchActions.success, (s, action) => produce(s, state => {
-        state.lastDetailsFetch = fetchStateFactory.onComplete(action.payload);
+        state.lastDetailsFetch = fetchStates.complete(action.payload);
     }))
     .handleAction(postDetailsetchActions.failure, (s, action) => produce(s, state => {
-        state.lastDetailsFetch = fetchStateFactory.onFailure();
+        state.lastDetailsFetch = fetchStates.failure;
     }))
     
+    // it may be better to this in some container component to avoid clientId
     .handleAction(fetchUserActions.request, (s, action) => produce(s, state => {
         console.log(action)
-        state.lastUserDetailsFetch = {...fetchStateFactory.onBegin(), clientId: action.payload.clientId}
+        state.lastUserDetailsFetch = {...fetchStates.begin, clientId: action.payload.clientId}
     }))
     .handleAction(fetchUserActions.success, (s, action) => produce(s, state => {
-        Object.assign(state.lastUserDetailsFetch, fetchStateFactory.onComplete(action.payload))
+        Object.assign(state.lastUserDetailsFetch, fetchStates.complete(action.payload))
     }))
     .handleAction(fetchUserActions.failure, (s, action) => produce(s, state => {
-        Object.assign(state.lastUserDetailsFetch, fetchStateFactory.onFailure())
+        Object.assign(state.lastUserDetailsFetch, fetchStates.failure)
     }))
     ;

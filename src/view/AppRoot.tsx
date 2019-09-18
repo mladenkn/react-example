@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { HomeSection } from './HomeSection';
 import { LoginSection, LoginFormInput } from './LoginForm';
+import { createMockAuthenticator } from '../logic/mockAuthenticator';
 
 const useStyles = makeStyles({
   root: {
@@ -35,12 +36,4 @@ function LoginSectionContainer(p: {className?: string, onSuccess: () => void}){
       setLoginFailed(true)
   }
   return <LoginSection className={p.className} loginFailed={loginFailed} onSubmit={onSubmit} />;
-}
-
-function createMockAuthenticator(){
-  const acceptedUsernames = ['mate', 'jure', 'frane', 'mladen'];
-  const acceptedPassword = 'sifra123';
-  return function(username: string, password: string){
-    return acceptedUsernames.includes(username) && password === acceptedPassword;
-  }
 }
