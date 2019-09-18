@@ -54,7 +54,7 @@ export function PostListPresenter(p: Props){
       else
         return (
           <ListItem disableGutters key={postContext.basic.id}>
-            <PostDetailsCard post={postContext.details!} raised />
+            <PostDetailsCard usernameProps={{canShowUserDetails: true}} post={postContext.details!} raised />
           </ListItem>
         )
     }

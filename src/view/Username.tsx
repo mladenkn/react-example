@@ -1,26 +1,28 @@
 import React, { Fragment, useState } from 'react';
-import { makeStyles, Link, ButtonBase, Card, Popover } from "@material-ui/core";
+import { makeStyles, Link, ButtonBase, Card, Popover, Typography, CircularProgress } from "@material-ui/core";
 import { AppState } from '../logic/store';
 import { connect } from 'react-redux';
 import { UserDetails, UserBasic } from '../logic/postList/types';
 import { fetchUserActions } from '../logic/postList/actions';
 import { selectUserDetailsDisplayContext } from '../logic/postList/selectors';
-import { useRef } from 'react';
 
-type Props = {
+export type UsernameProps = {
   className?: string  
   user: UserBasic
   id: string
+  canShowUserDetails?: boolean
 }
 
 export const Username = connect(
-  (appState: AppState, p: Props) => {
-    const { variant, user } = selectUserDetailsDisplayContext(appState.postList, p.user, p.id)
-    return { variant: variant as any, user };
+  (appState: AppState, p: UsernameProps) => {
+    const { variant, user } = selectUserDetailsDisplayContext(
+      appState.postList, p.user, p.id, p.canShowUserDetails || false
+    );
+    return { variant: variant as any, user, isClickable: p.canShowUserDetails || false };
   },
-  (dispatch, p: Props) => {
+  (dispatch, p: UsernameProps) => {
     return ({
-      onClick: () => dispatch(fetchUserActions.request({ clientId: p.id, userId: p.user.id }))
+      onClick: () => p.canShowUserDetails && dispatch(fetchUserActions.request({ clientId: p.id, userId: p.user.id }))
     });
   }
 )(UsernamePresenter);
@@ -28,6 +30,7 @@ export const Username = connect(
 type PresenterAllwaysProps = {
   onClick: () => void
   className?: string
+  isClickable: boolean
 }
 
 type PresenterProps = PresenterAllwaysProps & (
@@ -39,6 +42,8 @@ type PresenterProps = PresenterAllwaysProps & (
 function UsernamePresenter(p: PresenterProps){
   const [anchorEl, setAnchorEl] = useState(null);
   const [isClosedByUser, setIsClosedByUser] = useState(false);
+
+  console.log(p.user);
 
   function getPopoverContent(){
     switch(p.variant){
@@ -56,9 +61,11 @@ function UsernamePresenter(p: PresenterProps){
   }
 
   function handleClick(event: any) {
-    p.onClick();
-    setIsClosedByUser(false);
-    setAnchorEl(event.currentTarget);
+    if(p.isClickable){
+      p.onClick();
+      setIsClosedByUser(false);
+      setAnchorEl(event.currentTarget);
+    }
   }
 
   return (
@@ -67,9 +74,9 @@ function UsernamePresenter(p: PresenterProps){
         onClick={handleClick} 
         aria-describedby='details-popover' 
         className={p.className} 
-        component={ButtonBase}
+        component={p.isClickable ? ButtonBase : 'div'}
       >
-        {p.user.name}
+        {p.user.name} {p.isClickable.toString()}
       </Link>
       <Popover 
         id='details-popover'
@@ -91,28 +98,51 @@ function UsernamePresenter(p: PresenterProps){
   );  
 }
 
-const useUserDetailsLoadingStyles = makeStyles({
-
+const useUserDetailsBaseStyles = makeStyles({
+  root: {
+    padding: '0.3em 0.5em',
+  },
+  heading: {
+    fontSize: '1.1em',
+  },
+  body: {
+    marginTop: '0.1em',
+    marginLeft: '0.2em',
+  },
 })
 
 function UserDetailsLoading(p: {user: UserBasic}){
-  const classes = useUserDetailsLoadingStyles();
+  const classes = useUserDetailsBaseStyles();
   return (
-    <div>
-      Loading {p.user.name}
+    <div className={classes.root}>
+      <Typography className={classes.heading}>{p.user.name}</Typography>
+      <CircularProgress className={classes.body} />
     </div>
   )
 }
 
 const useUserDetailsStyles = makeStyles({
-
+  prop: {
+    fontSize: '0.95em',
+  }
 })
 
 function UserDetailsUI(p: {user: UserDetails}){
+  const baseClasses = useUserDetailsBaseStyles();
   const classes = useUserDetailsStyles();
+
+  const { name, email, phone, address } = p.user;
+  const addressStr = `${address.street}, ${address.suite}`;
+
   return (
-    <div>
-      {p.user.name}
+    <div className={baseClasses.root}>
+      <Typography className={baseClasses.heading}>{name}</Typography>
+      <div className={baseClasses.body}>
+        <Typography className={classes.prop}>Email: {email}</Typography>
+        <Typography className={classes.prop}>Phone: {phone}</Typography>
+        <Typography className={classes.prop}>Address: {addressStr}</Typography>
+        <Typography className={classes.prop}>City: {address.city}</Typography>
+      </div>
     </div>
   )
 }

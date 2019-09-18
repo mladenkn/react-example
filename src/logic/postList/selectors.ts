@@ -20,20 +20,17 @@ export function selectPostListViewData(state: PostListState): PostListViewData {
         return { data: undefined, status: state.lastListFetch.status }
 }
 
-export function selectUserDetailsForUser(state: PostListState, clientId: string){
-    const userDetails = state.lastUserDetailsFetch;
-    const fetchingOrFetchedUser = clientId === userDetails.clientId && userDetails.clientId;
-    return fetchingOrFetchedUser ? userDetails : undefined;
-}
-
 type UsernameDisplayVariant = 'justUsername' | 'loadingDetails' | 'withDetails' | 'usernameAndDetailsFetchError'
 
-export function selectUserDetailsDisplayContext(state: PostListState, user: UserBasic, clientId: string):
+export function selectUserDetailsDisplayContext(
+    state: PostListState, user: UserBasic, clientId: string, returnUserDetailsIfFecthed: boolean):
   {variant: UsernameDisplayVariant, user: UserBasic | UserDetails}{
       
   const { lastUserDetailsFetch } = state;
 
-  if((lastUserDetailsFetch.status === AsyncOperationStatus.NotInitiated) || lastUserDetailsFetch.clientId !== clientId){
+  if((lastUserDetailsFetch.status === AsyncOperationStatus.NotInitiated) || 
+    lastUserDetailsFetch.clientId !== clientId ||
+    !returnUserDetailsIfFecthed){
     return { variant: 'justUsername', user };
   }
   else if(lastUserDetailsFetch.status === AsyncOperationStatus.Processing){

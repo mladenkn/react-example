@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/styles"
 import { Card, Typography, CardActionArea } from "@material-ui/core"
 import React, { Fragment } from "react"
 import { PostBasic } from '../logic/postList/types'
-import { Username } from "./Username"
+import { Username, UsernameProps } from "./Username"
 
 const usePostCardStyles = makeStyles({
   root: {
@@ -24,15 +24,18 @@ interface Props {
   clickable?: boolean
   onClick?: () => void
   children?: JSX.Element | JSX.Element[]
+  usernameProps?: Partial<UsernameProps>
 }
 
 export function PostCard(p: Props){
   const classes = usePostCardStyles()
 
+  const additionalUsernameProps = p.usernameProps || {}
+
   const content = (
     <Fragment>
       <Typography className={classes.title}>{p.post.title}</Typography>
-      <Username id={p.post.id.toString()} user={p.post.user} className={classes.username} />
+      <Username {...additionalUsernameProps} id={p.post.id.toString()} user={p.post.user} className={classes.username} />
       {p.children}
     </Fragment>
   );
