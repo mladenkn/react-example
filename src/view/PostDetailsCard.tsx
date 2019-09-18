@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from "@material-ui/styles"
-import { Card, List, ListItem, Typography, colors } from "@material-ui/core";
+import { List, ListItem, Typography, colors } from "@material-ui/core";
 import { PostDetails, PostDetailsComment } from '../logic/postList/types'
 import { PostCard } from './PostCard';
 import { Username, UsernameProps } from './Username';

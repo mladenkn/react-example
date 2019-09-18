@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { makeStyles, Link, ButtonBase, Card, Popover, Typography, CircularProgress } from "@material-ui/core";
+import { makeStyles, Link, ButtonBase, Popover, Typography, CircularProgress } from "@material-ui/core";
 import { AppState } from '../logic/store';
 import { connect } from 'react-redux';
 import { UserDetails, UserBasic } from '../logic/postList/types';
@@ -55,8 +55,6 @@ function UsernamePresenter(p: PresenterProps){
         return <UserDetailsUI user={p.user} />;
       case 'usernameAndDetailsFetchError':
         return <div>{p.user.name} fetch error</div>;
-      default:
-        throw new Error();
     }
   }
 
@@ -74,9 +72,10 @@ function UsernamePresenter(p: PresenterProps){
         onClick={handleClick} 
         aria-describedby='details-popover' 
         className={p.className} 
+        underline={p.isClickable ? 'hover' : 'none'}
         component={p.isClickable ? ButtonBase : 'div'}
       >
-        {p.user.name} {p.isClickable.toString()}
+        {p.user.name}
       </Link>
       <Popover 
         id='details-popover'
