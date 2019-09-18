@@ -1,8 +1,8 @@
 import React, { Fragment, useState } from 'react';
-import { makeStyles, Link, ButtonBase, Popover, Typography, CircularProgress, List, ListItem, ListItemText } from "@material-ui/core";
+import { makeStyles, Link, ButtonBase, Popover } from "@material-ui/core";
 import { AppState } from '../logic/store';
 import { connect } from 'react-redux';
-import { UserBasic, UserDetailsViewData, TodoBasic } from '../logic/postList/types';
+import { UserBasic, UserDetailsViewData } from '../logic/postList/types';
 import { fetchUserActions } from '../logic/postList/actions';
 import { selectUserDetailsDisplayContext } from '../logic/postList/selectors';
 import { UserDetailsLoading, UserDetails as UserDetailsUI } from './UserDetails';

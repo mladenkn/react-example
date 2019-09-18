@@ -51,8 +51,16 @@ export function UserDetails(p: {className?: string, user: UserDetailsViewData}){
         <Typography className={classes.fontSize}>Phone: {phone}</Typography>
         <Typography className={classes.fontSize}>Address: {addressStr}</Typography>
         <Typography className={classes.fontSize}>City: {address.city}</Typography>
-        <TodoList className={clsx(classes.todos, classes.fontSize)} heading='Completed todos:' todos={todos.completed} />
-        <TodoList className={clsx(classes.todos, classes.fontSize)} heading='Uncompleted todos:' todos={todos.uncompleted} />
+        <TodoList 
+          className={clsx(classes.todos, classes.fontSize)} 
+          heading='Completed todos:' 
+          todos={todos.completed} 
+        />
+        <TodoList 
+          className={clsx(classes.todos, classes.fontSize)} 
+          heading='Uncompleted todos:' 
+          todos={todos.uncompleted} 
+        />
       </div>
     </div>
   )
