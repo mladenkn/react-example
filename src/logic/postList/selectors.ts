@@ -20,7 +20,12 @@ export function selectPostListViewData(state: PostListState): PostListViewData {
         return { data: undefined, status: state.lastListFetch.status }
 }
 
-type UsernameDisplayVariant = 'justUsername' | 'loadingDetails' | 'withDetails' | 'usernameAndDetailsFetchError'
+export enum UsernameDisplayVariant { 
+    JustUsername='JustUsername', 
+    LoadingDetails='LoadingDetails', 
+    WithDetails='WithDetails', 
+    DetailsFetchError='DetailsFetchError' 
+}
 
 function mapToUserDetailsViewData(user: UserDetails){
     const completed = user.todos.filter(u => u.completed);
@@ -38,16 +43,16 @@ export function selectUserDetailsDisplayContext(
   if((lastUserDetailsFetch.status === AsyncOperationStatus.NotInitiated) || 
     lastUserDetailsFetch.clientId !== clientId ||
     !returnUserDetailsIfFecthed){
-    return { variant: 'justUsername', user };
+    return { variant: UsernameDisplayVariant.JustUsername, user };
   }
   else if(lastUserDetailsFetch.status === AsyncOperationStatus.Processing){
-    return { variant: 'loadingDetails', user };
+    return { variant: UsernameDisplayVariant.LoadingDetails, user };
   }
   else if((lastUserDetailsFetch.status === AsyncOperationStatus.Completed)){
-    return { variant: 'withDetails', user: mapToUserDetailsViewData(lastUserDetailsFetch.data!) };
+    return { variant: UsernameDisplayVariant.WithDetails, user: mapToUserDetailsViewData(lastUserDetailsFetch.data!) };
   }
   else if(lastUserDetailsFetch.status === AsyncOperationStatus.Errored){
-    return { variant: 'usernameAndDetailsFetchError', user };
+    return { variant: UsernameDisplayVariant.DetailsFetchError, user };
   }
   else
     throw new Error()

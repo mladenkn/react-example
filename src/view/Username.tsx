@@ -4,7 +4,7 @@ import { AppState } from '../logic/store';
 import { connect } from 'react-redux';
 import { UserBasic, UserDetailsViewData } from '../logic/postList/types';
 import { fetchUserActions } from '../logic/postList/actions';
-import { selectUserDetailsDisplayContext } from '../logic/postList/selectors';
+import { selectUserDetailsDisplayContext, UsernameDisplayVariant } from '../logic/postList/selectors';
 import { UserDetailsLoading, UserDetails as UserDetailsUI } from './UserDetails';
 
 export type UsernameProps = {
@@ -34,9 +34,9 @@ type PresenterAllwaysProps = {
 }
 
 type PresenterProps = PresenterAllwaysProps & (
-  { variant: 'justUsername' | 'loadingDetails', user: UserBasic } |
-  { variant: 'withDetails', user: UserDetailsViewData } |
-  { variant: 'usernameAndDetailsFetchError', user: UserDetailsViewData }
+  { variant: UsernameDisplayVariant.JustUsername | UsernameDisplayVariant.LoadingDetails, user: UserBasic } |
+  { variant: UsernameDisplayVariant.WithDetails, user: UserDetailsViewData } |
+  { variant: UsernameDisplayVariant.DetailsFetchError, user: UserDetailsViewData }
 )
 
 const useUsernameStyles = makeStyles({
@@ -54,13 +54,13 @@ function UsernamePresenter(p: PresenterProps){
 
   function getPopoverContent(){
     switch(p.variant){
-      case 'justUsername':
+      case UsernameDisplayVariant.JustUsername:
         return <Fragment />;
-      case 'loadingDetails':
+      case UsernameDisplayVariant.LoadingDetails:
         return <UserDetailsLoading className={classes.popoverContent} user={p.user} />;
-      case 'withDetails':
+      case UsernameDisplayVariant.WithDetails:
         return <UserDetailsUI className={classes.popoverContent} user={p.user} />;
-      case 'usernameAndDetailsFetchError':
+      case UsernameDisplayVariant.DetailsFetchError:
         return <div>{p.user.name} fetch error</div>;
     }
   }
@@ -87,7 +87,7 @@ function UsernamePresenter(p: PresenterProps){
       <Popover 
         id='details-popover'
         onClose={() => setIsClosedByUser(true)}
-        open={isClosedByUser ? false : p.variant !== 'justUsername'}
+        open={isClosedByUser ? false : p.variant !== UsernameDisplayVariant.JustUsername}
         anchorEl={anchorEl}
         anchorOrigin={{
           vertical: 'bottom',
