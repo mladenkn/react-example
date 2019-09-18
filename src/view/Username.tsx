@@ -1,10 +1,11 @@
 import React, { Fragment, useState } from 'react';
-import { makeStyles, Link, ButtonBase, Popover, Typography, CircularProgress } from "@material-ui/core";
+import { makeStyles, Link, ButtonBase, Popover, Typography, CircularProgress, List, ListItem, ListItemText } from "@material-ui/core";
 import { AppState } from '../logic/store';
 import { connect } from 'react-redux';
-import { UserDetails, UserBasic } from '../logic/postList/types';
+import { UserBasic, UserDetailsViewData, TodoBasic } from '../logic/postList/types';
 import { fetchUserActions } from '../logic/postList/actions';
 import { selectUserDetailsDisplayContext } from '../logic/postList/selectors';
+import { UserDetailsLoading, UserDetails as UserDetailsUI } from './UserDetails';
 
 export type UsernameProps = {
   className?: string  
@@ -34,11 +35,20 @@ type PresenterAllwaysProps = {
 
 type PresenterProps = PresenterAllwaysProps & (
   { variant: 'justUsername' | 'loadingDetails', user: UserBasic } |
-  { variant: 'withDetails', user: UserDetails } |
-  { variant: 'usernameAndDetailsFetchError', user: UserDetails }
+  { variant: 'withDetails', user: UserDetailsViewData } |
+  { variant: 'usernameAndDetailsFetchError', user: UserDetailsViewData }
 )
+
+const useUsernameStyles = makeStyles({
+  popoverContent: {
+    maxHeight: '60vh',
+    overflowY: 'auto',
+    width: '25em',
+  },
+});
  
 function UsernamePresenter(p: PresenterProps){
+  const classes = useUsernameStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [isClosedByUser, setIsClosedByUser] = useState(false);
 
@@ -47,9 +57,9 @@ function UsernamePresenter(p: PresenterProps){
       case 'justUsername':
         return <Fragment />;
       case 'loadingDetails':
-        return <UserDetailsLoading user={p.user} />;
+        return <UserDetailsLoading className={classes.popoverContent} user={p.user} />;
       case 'withDetails':
-        return <UserDetailsUI user={p.user} />;
+        return <UserDetailsUI className={classes.popoverContent} user={p.user} />;
       case 'usernameAndDetailsFetchError':
         return <div>{p.user.name} fetch error</div>;
     }
@@ -92,53 +102,4 @@ function UsernamePresenter(p: PresenterProps){
       </Popover>
     </Fragment>
   );  
-}
-
-const useUserDetailsBaseStyles = makeStyles({
-  root: {
-    padding: '0.3em 0.5em',
-  },
-  heading: {
-    fontSize: '1.1em',
-  },
-  body: {
-    marginTop: '0.1em',
-    marginLeft: '0.2em',
-  },
-})
-
-function UserDetailsLoading(p: {user: UserBasic}){
-  const classes = useUserDetailsBaseStyles();
-  return (
-    <div className={classes.root}>
-      <Typography className={classes.heading}>{p.user.name}</Typography>
-      <CircularProgress className={classes.body} />
-    </div>
-  )
-}
-
-const useUserDetailsStyles = makeStyles({
-  prop: {
-    fontSize: '0.95em',
-  }
-})
-
-function UserDetailsUI(p: {user: UserDetails}){
-  const baseClasses = useUserDetailsBaseStyles();
-  const classes = useUserDetailsStyles();
-
-  const { name, email, phone, address } = p.user;
-  const addressStr = `${address.street}, ${address.suite}`;
-
-  return (
-    <div className={baseClasses.root}>
-      <Typography className={baseClasses.heading}>{name}</Typography>
-      <div className={baseClasses.body}>
-        <Typography className={classes.prop}>Email: {email}</Typography>
-        <Typography className={classes.prop}>Phone: {phone}</Typography>
-        <Typography className={classes.prop}>Address: {addressStr}</Typography>
-        <Typography className={classes.prop}>City: {address.city}</Typography>
-      </div>
-    </div>
-  )
 }

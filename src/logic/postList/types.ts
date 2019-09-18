@@ -1,5 +1,6 @@
 import { AsyncOperationStatus } from "../../utils";
 import { FetchOf } from "../../utils";
+import { Overwrite } from 'utility-types';
 
 export interface UserBasic {
     id: number
@@ -54,4 +55,22 @@ export interface UserDetails {
         suite: string
         city: string
     }
+    todos: Todo[]
+}
+
+interface UserDetailsViewDataTodos {
+    completed: TodoBasic[]
+    uncompleted: TodoBasic[]
+}
+
+export type UserDetailsViewData = Overwrite<UserDetails, { todos: UserDetailsViewDataTodos }>
+
+export interface TodoBasic {
+    id: number
+    title: string
+}
+
+export interface Todo extends TodoBasic {
+    userId: number
+    completed: boolean
 }

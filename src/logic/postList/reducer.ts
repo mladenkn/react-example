@@ -23,6 +23,7 @@ export const postListReducer = createReducer<PostListState, RootAction>(postList
         state.lastListFetch = fetchStates.begin;
     }))
     .handleAction(postListFetchActions.success, (s, action) => produce(s, state => {
+        console.log(action.payload)
         state.lastListFetch = fetchStates.complete(action.payload);
     }))
     .handleAction(postListFetchActions.failure, (s, action) => produce(s, state => {
