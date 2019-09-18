@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/styles";
 import { UserBasic, UserDetailsViewData, TodoBasic } from "../logic/postList/types";
 import React from "react";
 import clsx from "clsx";
-import { Typography, CircularProgress, List, ListItem } from "@material-ui/core";
+import { Typography, CircularProgress } from "@material-ui/core";
 
 const useUserDetailsBaseStyles = makeStyles({
   root: {
@@ -32,7 +32,7 @@ const useUserDetailsStyles = makeStyles({
     fontSize: '0.95em',
   },
   todos: {
-    marginTop: '0.5em',
+    marginTop: '0.3em',
   },
 })
 
