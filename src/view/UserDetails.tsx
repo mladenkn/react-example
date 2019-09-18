@@ -71,25 +71,29 @@ const useTodoListStyles = makeStyles({
     fontSize: '1em',
   },
   list: {
-    marginLeft: '2em',
+    marginTop: '0.1em',
   },
   item: {
     padding: '0.1em',
   },
-})
+});
 
+/*
+There is pretty much nothing to gain here by using Material UI list.
+It only makes it harder to use bullet points on items.
+*/
 function TodoList(p: {className?: string, heading: string, todos: TodoBasic[]}){
   const classes = useTodoListStyles();
   return (
     <div className={p.className}>
       <Typography className={classes.fontSize}>{p.heading}</Typography>
-      <List disablePadding className={classes.list}>
+      <ul className={classes.list}>
         {p.todos.map(t => 
-          <ListItem className={classes.item}>
+          <li key={t.id} className={classes.item}>
             <Typography className={classes.fontSize}>{t.title}</Typography>
-          </ListItem>
+          </li>
         )}
-      </List>
+      </ul>
     </div>
   )
 }
