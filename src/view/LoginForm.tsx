@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { TextField, Typography, colors, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import clsx from 'clsx';
@@ -23,22 +23,34 @@ const useStyles = makeStyles({
     float: 'right',
     marginTop: '1em',
   },
+  failureMessage: {
+    marginTop: '3em',
+    marginLeft: '1.1em',
+    color: colors.red[800]
+  },
 });
 
-function useLoginLogic(){
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  return { username, setUsername, password, setPassword };
+export interface LoginFormInput {
+  username: string
+  password: string
 }
 
-export function LoginSection(p: {className?: string, onSuccess: () => void}){
-  const classes = useStyles();
-  const logic = useLoginLogic();
-  return <LoginSectionPresenter className={p.className} logic={logic} />;
+function useState(){
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const input = { username, password }
+  return { input, setUsername, setPassword };
 }
 
-export function LoginSectionPresenter(p: {className?: string, logic: ReturnType<typeof useLoginLogic>}){
+interface Props {
+  className?: string, 
+  onSubmit: (input: LoginFormInput) => void,
+  loginFailed: boolean
+}
+
+export function LoginSection(p: Props){
   const classes = useStyles();
+  const state = useState();
   return (
     <div className={clsx(p.className, classes.root)}>
       <Typography className={classes.heading}>Please login in</Typography>
@@ -46,16 +58,25 @@ export function LoginSectionPresenter(p: {className?: string, logic: ReturnType<
         <TextField 
           className={classes.username} 
           label='Username' 
-          onChange={e => p.logic.setUsername(e.target.value)}
-          value={p.logic.username} 
+          value={state.input.username} 
+          onChange={e => state.setUsername(e.target.value)}
         />
         <TextField 
           label='Password' 
-          value={p.logic.password} 
-          onChange={e => p.logic.setPassword(e.target.value)}
+          value={state.input.password} 
+          onChange={e => state.setPassword(e.target.value)}
         />
       </div>
-      <Button className={classes.submitButton} color='primary'>Submit</Button>
+      <Button 
+        className={classes.submitButton}
+        onClick={() => p.onSubmit(state.input)} 
+        color='primary'
+      >
+          Submit
+      </Button>
+      {p.loginFailed &&
+        <Typography className={classes.failureMessage}>Login Failed</Typography>        
+      }
     </div>
   )
 }
