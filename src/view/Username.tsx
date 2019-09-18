@@ -20,11 +20,9 @@ export const Username = connect(
     );
     return { variant: variant as any, user, isClickable: p.canShowUserDetails || false };
   },
-  (dispatch, p: UsernameProps) => {
-    return ({
-      onClick: () => p.canShowUserDetails && dispatch(fetchUserActions.request({ clientId: p.id, userId: p.user.id }))
-    });
-  }
+  (dispatch, p: UsernameProps) => ({
+    onClick: () => p.canShowUserDetails && dispatch(fetchUserActions.request({ clientId: p.id, userId: p.user.id }))
+  })
 )(UsernamePresenter);
 
 type PresenterAllwaysProps = {
@@ -42,8 +40,6 @@ type PresenterProps = PresenterAllwaysProps & (
 function UsernamePresenter(p: PresenterProps){
   const [anchorEl, setAnchorEl] = useState(null);
   const [isClosedByUser, setIsClosedByUser] = useState(false);
-
-  console.log(p.user);
 
   function getPopoverContent(){
     switch(p.variant){
